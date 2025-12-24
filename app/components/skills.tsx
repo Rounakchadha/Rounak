@@ -14,6 +14,16 @@ export default function Skills() {
   const [currentIndex, setCurrentIndex] = useState(-1)
   const scrollTriggerRef = useRef<ScrollTrigger | null>(null)
 
+  // Safe card size helper - smaller mobile, bigger desktop
+  const getCardSize = () => {
+    if (typeof window === 'undefined') {
+      return { width: '450px', height: '500px' }
+    }
+    return window.innerWidth < 768
+      ? { width: '180px', height: '250px' }  // Much smaller for mobile
+      : { width: '450px', height: '500px' }  // Bigger for desktop
+  }
+
   // marquee text
   const { scrollYProgress: textScroll } = useScroll({
     target: textSectionRef,
@@ -39,7 +49,7 @@ export default function Skills() {
     const ctx = gsap.context(() => {
       // Measure to keep logic responsive
       const firstEl = document.querySelector('.skill-card-0') as HTMLElement | null
-      const cardW = firstEl ? firstEl.offsetWidth : 400
+      const cardW = firstEl ? firstEl.offsetWidth : 450
       const gap = Math.max(140, Math.min(220, Math.floor(window.innerWidth * 0.12))) // spacing between cards
       const stepX = Math.round(cardW + gap) // distance between neighboring card centers
 
@@ -161,19 +171,25 @@ export default function Skills() {
 
         {/* Cards Layer */}
         <div ref={containerRef} className="relative z-10 h-screen flex items-center justify-center">
-          <div className="w-full max-w-7xl mx-auto px-8">
+          <div className="w-full max-w-7xl mx-auto px-4 md:px-8">
             <div className="relative h-[600px] flex items-center justify-center">
               {skillCards.map((card, index) => (
                 <div
                   key={card.id}
-                  className={`skill-card-${index} gfx-card absolute bg-white rounded-3xl shadow-xl border border-gray-200 p-10`}
-                  style={{ width: '400px', height: '450px', zIndex: 20, transition: 'none' }}
+                  className={`skill-card-${index} gfx-card absolute bg-white rounded-xl md:rounded-3xl shadow-xl border border-gray-200 p-3 md:p-10`}
+                  style={{
+                    ...getCardSize(),
+                    zIndex: 20,
+                    transition: 'none',
+                  }}
                 >
                   <div className="h-full flex flex-col justify-start">
-                    <h3 className="text-3xl font-bold text-gray-900 mb-8 tracking-tight">{card.title}</h3>
-                    <div className="space-y-4">
+                    <h3 className="text-sm md:text-3xl font-bold text-gray-900 mb-2 md:mb-8 tracking-tight">
+                      {card.title}
+                    </h3>
+                    <div className="space-y-1 md:space-y-4">
                       {card.skills.map((skill, i) => (
-                        <div key={i} className="text-gray-700 text-lg font-medium">
+                        <div key={i} className="text-gray-700 text-[9px] md:text-lg font-medium">
                           {skill}
                         </div>
                       ))}
@@ -184,8 +200,8 @@ export default function Skills() {
             </div>
 
             {/* Progress */}
-            <div className="absolute bottom-16 left-1/2 -translate-x-1/2 text-center z-30">
-              <div className="text-lg font-mono text-gray-600 bg-white px-4 py-2 rounded-full shadow-lg">
+            <div className="absolute bottom-12 md:bottom-16 left-1/2 -translate-x-1/2 text-center z-30">
+              <div className="text-xs md:text-lg font-mono text-gray-600 bg-white px-2.5 md:px-4 py-1 md:py-2 rounded-full shadow-lg">
                 {String(safeIndex).padStart(2, '0')} — {String(N).padStart(2, '0')}
               </div>
             </div>

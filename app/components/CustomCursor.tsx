@@ -1,57 +1,115 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
+import { useEffect, useRef } from 'react'
+import gsap from 'gsap'
 
 export default function CustomCursor() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
-  const [isHovering, setIsHovering] = useState(false)
+  const cursorRef = useRef<HTMLDivElement>(null)
+  const dotRef = useRef<HTMLDivElement>(null)
+  const mousePos = useRef({ x: 0, y: 0 })
 
   useEffect(() => {
+    const cursor = cursorRef.current
+    const dot = dotRef.current
+    if (!cursor || !dot) return
+
+    // Update mouse position without re-rendering
     const updateMousePosition = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY })
+      mousePos.current = { x: e.clientX, y: e.clientY }
     }
 
+    // Smooth follow with GSAP
+    const animateCursor = () => {
+      gsap.to(cursor, {
+        x: mousePos.current.x - 16,
+        y: mousePos.current.y - 16,
+        duration: 0.3,
+        ease: 'power2.out'
+      })
+
+      gsap.to(dot, {
+        x: mousePos.current.x - 2,
+        y: mousePos.current.y - 2,
+        duration: 0.1,
+        ease: 'power2.out'
+      })
+
+      requestAnimationFrame(animateCursor)
+    }
+
+    // Handle hover states
     const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement
-      if (target.tagName === 'A' || target.tagName === 'BUTTON' || target.closest('a') || target.closest('button')) {
-        setIsHovering(true)
+      if (
+        target.tagName === 'A' || 
+        target.tagName === 'BUTTON' || 
+        target.closest('a') || 
+        target.closest('button') ||
+        target.classList.contains('cursor-hover')
+      ) {
+        gsap.to(cursor, {
+          scale: 1.5,
+          duration: 0.3,
+          ease: 'power2.out'
+        })
       }
     }
 
-    const handleMouseOut = () => {
-      setIsHovering(false)
+    const handleMouseOut = (e: MouseEvent) => {
+      const target = e.target as HTMLElement
+      const relatedTarget = e.relatedTarget as HTMLElement
+      
+      // Only scale down if we're not moving to another hoverable element
+      if (
+        relatedTarget &&
+        !relatedTarget.closest('a') &&
+        !relatedTarget.closest('button') &&
+        relatedTarget.tagName !== 'A' &&
+        relatedTarget.tagName !== 'BUTTON' &&
+        !relatedTarget.classList.contains('cursor-hover')
+      ) {
+        gsap.to(cursor, {
+          scale: 1,
+          duration: 0.3,
+          ease: 'power2.out'
+        })
+      }
     }
 
     window.addEventListener('mousemove', updateMousePosition)
-    window.addEventListener('mouseover', handleMouseOver)
-    window.addEventListener('mouseout', handleMouseOut)
+    document.addEventListener('mouseover', handleMouseOver)
+    document.addEventListener('mouseout', handleMouseOut)
+    
+    animateCursor()
 
     return () => {
       window.removeEventListener('mousemove', updateMousePosition)
-      window.removeEventListener('mouseover', handleMouseOver)
-      window.removeEventListener('mouseout', handleMouseOut)
+      document.removeEventListener('mouseover', handleMouseOver)
+      document.removeEventListener('mouseout', handleMouseOut)
     }
   }, [])
 
   return (
     <>
-      <motion.div
+      {/* Outer cursor ring */}
+      <div
+        ref={cursorRef}
         className="fixed w-8 h-8 border-2 border-white rounded-full pointer-events-none z-[9999] mix-blend-difference"
-        animate={{
-          x: mousePosition.x - 16,
-          y: mousePosition.y - 16,
-          scale: isHovering ? 1.5 : 1,
+        style={{ 
+          left: 0, 
+          top: 0,
+          willChange: 'transform'
         }}
-        transition={{ type: 'spring', stiffness: 500, damping: 28 }}
       />
-      <motion.div
-        className="fixed w-1 h-1 bg-white rounded-full pointer-events-none z-[9999]"
-        animate={{
-          x: mousePosition.x - 2,
-          y: mousePosition.y - 2,
+      {/* Inner dot */}
+      <div
+        ref={dotRef}
+        className="fixed w-1 h-1 bg-white rounded-full pointer-events-none z-[9999] mix-blend-difference"
+        style={{ 
+          left: 0, 
+          top: 0,
+          willChange: 'transform'
         }}
-        transition={{ type: 'spring', stiffness: 1000, damping: 40 }}
       />
     </>
   )

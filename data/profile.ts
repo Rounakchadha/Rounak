@@ -7,8 +7,8 @@ export const profile = {
   
   socials: {
     linkedin: "https://www.linkedin.com/in/rounak-chadha-b66723280/",
-    github: "https://github.com/rounakchadha", // TODO: Update with actual GitHub URL
-    twitter: "", // TODO: Add if available
+    github: "https://github.com/rounakchadha",
+    twitter: "",
     email: "rc2594@srmist.edu.in",
   },
   
@@ -59,46 +59,88 @@ export const profile = {
   
   projects: [
     {
-      title: "CerviCare - Cervical Cancer Awareness Application",
-      description: "Developed a responsive web application with AI-driven chatbot for immediate, interactive symptom identification and personalized guidance",
-      impact: "Achieved 40% increase in user engagement through intuitive UX design",
-      tech: ["React", "AI Chatbot", "API Integration", "Location Services"],
-      image: "/projects/cervicare.jpg", // TODO: Add actual image
+      title: "PropBot AI — Real Estate Intelligence Platform",
+      description:
+        "Developed a conversational AI chatbot for property discovery, loan eligibility checks, ROI calculations, and area insights, significantly reducing the time and effort required by home buyers.",
+      impact:
+        "Built with FastAPI, Supabase Postgres + pgvector, RAG pipelines with LLMs, and a React chat interface; optimized the backend for sub‑second responses and achieved an estimated 50% reduction in search effort.",
+      tech: ["FastAPI", "Supabase", "PostgreSQL", "pgvector", "React", "LLM", "RAG", "ML"],
+      image: "/projects/propbot-ai.jpg",
       links: {
-        github: "#", // TODO: Add actual link
-        live: "#", // TODO: Add actual link
-      }
+        github: "#",
+        live: "#",
+      },
+    },
+    {
+      title: "InsightCRM — Real-Time Analytics Dashboard",
+      description:
+        "Created a full‑stack analytics dashboard to manage 10k+ customer records and provide live visibility into revenue, churn, and user activity for operations teams.",
+      impact:
+        "Implemented with React, Node.js/FastAPI, PostgreSQL, and WebSockets; optimized SQL queries and APIs to reach sub‑second lookups and improve decision‑making speed by ~40%.",
+      tech: ["React", "Node.js", "FastAPI", "PostgreSQL", "WebSockets"],
+      image: "/projects/insight-crm.jpg",
+      links: {
+        github: "#",
+        live: "#",
+      },
+    },
+    {
+      title: "AR/VR House Tour Application",
+      description:
+        "Developed a web‑based AR/VR house‑tour application enabling users to explore 360° panoramic property tours with interactive room transitions and smooth navigation.",
+      impact:
+        "Delivered a scalable prototype using Three.js, WebXR, and React with 3D model rendering and scene optimization to showcase how virtual property tours can improve user engagement for real estate platforms.",
+      tech: ["Three.js", "WebXR", "React", "3D Rendering"],
+      image: "/projects/ar-vr-house-tour.jpg",
+      links: {
+        github: "#",
+        live: "#",
+      },
+    },
+    {
+      title: "CerviCare - Cervical Cancer Awareness Application",
+      description:
+        "Developed a responsive web application with AI-driven chatbot for immediate, interactive symptom identification and personalized guidance.",
+      impact: "Achieved 40% increase in user engagement through intuitive UX design.",
+      tech: ["React", "AI Chatbot", "API Integration", "Location Services"],
+      image: "/projects/cervicare.jpg",
+      links: {
+        github: "#",
+        live: "#",
+      },
     },
     {
       title: "Deepfake Detection using CNNs and Vision Transformers",
-      description: "Engineered advanced detection algorithms using convolutional and recurrent neural networks to identify deepfake images and videos in real-time",
-      impact: "Achieved 93% detection accuracy with 45% reduction in processing time",
+      description:
+        "Engineered advanced detection algorithms using convolutional and transformer-based neural networks to identify deepfake images and videos in near real-time.",
+      impact: "Achieved 93% detection accuracy with 45% reduction in processing time.",
       tech: ["Python", "CNN", "Vision Transformers", "TensorFlow"],
-      image: "/projects/deepfake.jpg", // TODO: Add actual image
+      image: "/projects/deepfake.jpg",
       links: {
-        github: "#", // TODO: Add actual link
-      }
+        github: "#",
+      },
     },
     {
       title: "House Price Prediction for GreenPearl SRM",
-      description: "Built predictive model using advanced regression techniques with React-based frontend for instant property price estimates",
-      impact: "80% predictive accuracy, 30% increase in user engagement",
-      tech: ["React", "Python", "XGBoost", "Ridge/Lasso Regression"],
-      image: "/projects/greenpearl.jpg", // TODO: Add actual image
+      description:
+        "Built a predictive model using advanced regression techniques with a React-based frontend for instant property price estimates.",
+      impact: "Reached ~80% predictive accuracy and increased user engagement by ~30%.",
+      tech: ["React", "Python", "XGBoost", "Ridge Regression", "Lasso Regression"],
+      image: "/projects/greenpearl.jpg",
       links: {
-        github: "#", // TODO: Add actual link
-        live: "#", // TODO: Add actual link
-      }
-    }
+        github: "#",
+        live: "#",
+      },
+    },
   ],
   
   skills: {
-    "Languages": ["Java", "C", "C++", "Python", "JavaScript", "TypeScript"],
+    Languages: ["Java", "C", "C++", "Python", "JavaScript", "TypeScript"],
     "Web Development": ["React.js", "Next.js", "HTML", "CSS", "Tailwind CSS", "Spring Boot"],
-    "Database": ["SQL", "PostgreSQL", "Excel"],
-    "DevOps": ["Docker", "Git", "Jenkins", "Terraform", "Ansible", "Prometheus", "Grafana"],
-    "Cloud": ["Vercel", "Cloudflare"],
-    "Design": ["Figma", "Canva", "Flutter", "Wix"]
+    Database: ["SQL", "PostgreSQL", "Excel"],
+    DevOps: ["Docker", "Git", "Jenkins", "Terraform", "Ansible", "Prometheus", "Grafana"],
+    Cloud: ["Vercel", "Cloudflare"],
+    Design: ["Figma", "Canva", "Flutter", "Wix"],
   },
   
   education: [
@@ -106,12 +148,12 @@ export const profile = {
       degree: "B.Tech in Computer Science and Engineering",
       institution: "S.R.M Institute of Science and Technology, Chennai",
       duration: "2021 - 2025",
-      gpa: "9.04 GPA"
+      gpa: "9.04 GPA",
     },
     {
       degree: "Physics, Chemistry and Maths with Computers",
       institution: "City Montessori School, Lucknow",
-      duration: "2020 - 2022"
-    }
-  ]
-};
+      duration: "2020 - 2022",
+    },
+  ],
+}
