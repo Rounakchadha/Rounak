@@ -4,111 +4,77 @@ import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 
 export default function CustomCursor() {
-  const cursorRef = useRef<HTMLDivElement>(null)
+  const ringRef = useRef<HTMLDivElement>(null)
   const dotRef = useRef<HTMLDivElement>(null)
-  const mousePos = useRef({ x: 0, y: 0 })
+  const mousePos = useRef({ x: -100, y: -100 })
+  const rafRef = useRef<number>(0)
 
   useEffect(() => {
-    const cursor = cursorRef.current
+    const ring = ringRef.current
     const dot = dotRef.current
-    if (!cursor || !dot) return
+    if (!ring || !dot) return
 
-    // Update mouse position without re-rendering
-    const updateMousePosition = (e: MouseEvent) => {
+    const onMove = (e: MouseEvent) => {
       mousePos.current = { x: e.clientX, y: e.clientY }
     }
 
-    // Smooth follow with GSAP
-    const animateCursor = () => {
-      gsap.to(cursor, {
-        x: mousePos.current.x - 16,
-        y: mousePos.current.y - 16,
-        duration: 0.3,
-        ease: 'power2.out'
-      })
-
-      gsap.to(dot, {
-        x: mousePos.current.x - 2,
-        y: mousePos.current.y - 2,
-        duration: 0.1,
-        ease: 'power2.out'
-      })
-
-      requestAnimationFrame(animateCursor)
+    const tick = () => {
+      const { x, y } = mousePos.current
+      gsap.to(dot, { x: x - 4, y: y - 4, duration: 0.05, ease: 'none', overwrite: 'auto' })
+      gsap.to(ring, { x: x - 20, y: y - 20, duration: 0.15, ease: 'power2.out', overwrite: 'auto' })
+      rafRef.current = requestAnimationFrame(tick)
     }
 
-    // Handle hover states
-    const handleMouseOver = (e: MouseEvent) => {
-      const target = e.target as HTMLElement
-      if (
-        target.tagName === 'A' || 
-        target.tagName === 'BUTTON' || 
-        target.closest('a') || 
-        target.closest('button') ||
-        target.classList.contains('cursor-hover')
-      ) {
-        gsap.to(cursor, {
-          scale: 1.5,
-          duration: 0.3,
-          ease: 'power2.out'
-        })
+    const onOver = (e: MouseEvent) => {
+      const t = e.target as HTMLElement
+      if (t.tagName === 'A' || t.tagName === 'BUTTON' || t.closest('a') || t.closest('button')) {
+        gsap.to(ring, { width: 48, height: 48, x: mousePos.current.x - 24, y: mousePos.current.y - 24, duration: 0.3, ease: 'power2.out' })
+        gsap.to(dot, { opacity: 0, duration: 0.2 })
+      }
+    }
+    const onOut = (e: MouseEvent) => {
+      const rel = e.relatedTarget as HTMLElement
+      if (!rel || (!rel.closest('a') && !rel.closest('button'))) {
+        gsap.to(ring, { width: 40, height: 40, duration: 0.3, ease: 'power2.out' })
+        gsap.to(dot, { opacity: 1, duration: 0.2 })
       }
     }
 
-    const handleMouseOut = (e: MouseEvent) => {
-      const target = e.target as HTMLElement
-      const relatedTarget = e.relatedTarget as HTMLElement
-      
-      // Only scale down if we're not moving to another hoverable element
-      if (
-        relatedTarget &&
-        !relatedTarget.closest('a') &&
-        !relatedTarget.closest('button') &&
-        relatedTarget.tagName !== 'A' &&
-        relatedTarget.tagName !== 'BUTTON' &&
-        !relatedTarget.classList.contains('cursor-hover')
-      ) {
-        gsap.to(cursor, {
-          scale: 1,
-          duration: 0.3,
-          ease: 'power2.out'
-        })
-      }
-    }
-
-    window.addEventListener('mousemove', updateMousePosition)
-    document.addEventListener('mouseover', handleMouseOver)
-    document.addEventListener('mouseout', handleMouseOut)
-    
-    animateCursor()
+    window.addEventListener('mousemove', onMove, { passive: true })
+    document.addEventListener('mouseover', onOver)
+    document.addEventListener('mouseout', onOut)
+    rafRef.current = requestAnimationFrame(tick)
 
     return () => {
-      window.removeEventListener('mousemove', updateMousePosition)
-      document.removeEventListener('mouseover', handleMouseOver)
-      document.removeEventListener('mouseout', handleMouseOut)
+      window.removeEventListener('mousemove', onMove)
+      document.removeEventListener('mouseover', onOver)
+      document.removeEventListener('mouseout', onOut)
+      cancelAnimationFrame(rafRef.current)
     }
   }, [])
 
   return (
     <>
-      {/* Outer cursor ring */}
       <div
-        ref={cursorRef}
-        className="fixed w-8 h-8 border-2 border-white rounded-full pointer-events-none z-[9999] mix-blend-difference"
-        style={{ 
-          left: 0, 
-          top: 0,
-          willChange: 'transform'
+        id="cursor-ring"
+        ref={ringRef}
+        style={{
+          position: 'fixed', left: 0, top: 0, width: 40, height: 40,
+          border: '1px solid rgba(56,189,248,0.7)',
+          borderRadius: '50%',
+          pointerEvents: 'none', zIndex: 9997, willChange: 'transform',
+          boxShadow: '0 0 12px rgba(56,189,248,0.3)',
         }}
       />
-      {/* Inner dot */}
       <div
+        id="cursor-dot"
         ref={dotRef}
-        className="fixed w-1 h-1 bg-white rounded-full pointer-events-none z-[9999] mix-blend-difference"
-        style={{ 
-          left: 0, 
-          top: 0,
-          willChange: 'transform'
+        style={{
+          position: 'fixed', left: 0, top: 0, width: 8, height: 8,
+          background: 'radial-gradient(circle, #38bdf8, #818cf8)',
+          borderRadius: '50%',
+          pointerEvents: 'none', zIndex: 9997, willChange: 'transform',
+          boxShadow: '0 0 8px rgba(56,189,248,0.9)',
         }}
       />
     </>
