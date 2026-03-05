@@ -28,12 +28,15 @@
   }
 
   html {
+    font-size: 16px; /* Lock rem base across all environments */
     scroll-behavior: initial;
     /* Lenis handles smooth scroll */
     background-color: var(--bg-primary);
     color: var(--text-primary);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%; /* Prevent Safari/iOS text auto-scaling */
+    text-size-adjust: 100%;
   }
 
   body {
