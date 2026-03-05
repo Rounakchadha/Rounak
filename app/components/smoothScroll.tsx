@@ -3,17 +3,18 @@
 import { ReactNode, useEffect } from 'react'
 import Lenis from 'lenis'
 
-interface SmoothScrollProps {
-  children: ReactNode
-}
-
-export default function SmoothScroll({ children }: SmoothScrollProps) {
+export default function SmoothScroll({ children }: { children: ReactNode }) {
   useEffect(() => {
+    window.scrollTo(0, 0)
+
     const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      duration: 1.5, // Slower, Apple-like velvety scroll
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // easeOutExpo
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
       smoothWheel: true,
       wheelMultiplier: 1,
+      touchMultiplier: 2,
     })
 
     function raf(time: number) {
