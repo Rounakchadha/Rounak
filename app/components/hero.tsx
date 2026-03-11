@@ -28,14 +28,14 @@ export default function Hero() {
       <div className="absolute inset-0 pointer-events-none overflow-hidden flex flex-col justify-center gap-12 -z-10 mix-blend-screen opacity-30 blur-[4px]">
         <div className="flex whitespace-nowrap animate-marquee">
           {Array(4).fill(0).map((_, i) => (
-            <span key={i} className="text-[16vw] font-black uppercase tracking-tighter liquid-glass-text mr-8" style={{ paddingRight: '2rem' }}>
+            <span key={i} className="font-black uppercase tracking-tighter liquid-glass-text mr-8" style={{ fontSize: 'min(16vw, 220px)', paddingRight: '2rem' }}>
               FULL STACK • DEVELOPER • ENGINEER • FRONT END • BACK END
             </span>
           ))}
         </div>
         <div className="flex whitespace-nowrap animate-marquee-reverse">
           {Array(4).fill(0).map((_, i) => (
-            <span key={`rev-${i}`} className="text-[16vw] font-black uppercase tracking-tighter liquid-glass-text mr-8" style={{ paddingRight: '2rem' }}>
+            <span key={`rev-${i}`} className="font-black uppercase tracking-tighter liquid-glass-text mr-8" style={{ fontSize: 'min(16vw, 220px)', paddingRight: '2rem' }}>
               SOFTWARE ENGINEER • CREATOR
             </span>
           ))}
