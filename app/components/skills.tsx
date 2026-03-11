@@ -201,7 +201,7 @@ export default function Skills() {
                 {/* Horizontal Scrolling Marquee container */}
                 <div className="relative w-full h-full overflow-hidden flex justify-start items-center pl-[50%] mask-image-horizontal gap-4">
                   <motion.div
-                    className="flex flex-row gap-4 h-[80%] min-h-[140px] absolute left-0"
+                    className="flex flex-row h-[80%] min-h-[140px] absolute left-0"
                     animate={{ x: ["0%", "-50%"] }}
                     transition={{
                       duration: 15,
@@ -209,14 +209,18 @@ export default function Skills() {
                       repeat: Infinity,
                     }}
                   >
-                    {/* First set of images */}
-                    <img src="/assets/ai_demo_1.jpg" alt="AI Chatbot Demo" className="h-full w-auto rounded-xl object-cover border border-[#222] shadow-2xl" />
-                    <img src="/assets/ai_demo_2.jpg" alt="AI Interface" className="h-full w-auto rounded-xl object-cover border border-[#222] shadow-2xl" />
-                    <img src="/assets/ai_demo_3.png" alt="Automation Workflow" className="h-full w-auto rounded-xl object-cover border border-[#222] shadow-2xl" />
-                    {/* Duplicate set for seamless looping */}
-                    <img src="/assets/ai_demo_1.jpg" alt="AI Chatbot Demo" className="h-full w-auto rounded-xl object-cover border border-[#222] shadow-2xl" />
-                    <img src="/assets/ai_demo_2.jpg" alt="AI Interface" className="h-full w-auto rounded-xl object-cover border border-[#222] shadow-2xl" />
-                    <img src="/assets/ai_demo_3.png" alt="Automation Workflow" className="h-full w-auto rounded-xl object-cover border border-[#222] shadow-2xl" />
+                    {/* First wrapper */}
+                    <div className="flex flex-row gap-4 pr-4 shrink-0 h-full">
+                      <img src="/assets/ai_demo_1.jpg" alt="AI Chatbot Demo" className="h-full w-auto rounded-xl object-cover border border-[#222] shadow-2xl" />
+                      <img src="/assets/ai_demo_2.jpg" alt="AI Interface" className="h-full w-auto rounded-xl object-cover border border-[#222] shadow-2xl" />
+                      <img src="/assets/ai_demo_3.png" alt="Automation Workflow" className="h-full w-auto rounded-xl object-cover border border-[#222] shadow-2xl" />
+                    </div>
+                    {/* Second wrapper for seamless looping */}
+                    <div className="flex flex-row gap-4 pr-4 shrink-0 h-full">
+                      <img src="/assets/ai_demo_1.jpg" alt="AI Chatbot Demo" className="h-full w-auto rounded-xl object-cover border border-[#222] shadow-2xl" />
+                      <img src="/assets/ai_demo_2.jpg" alt="AI Interface" className="h-full w-auto rounded-xl object-cover border border-[#222] shadow-2xl" />
+                      <img src="/assets/ai_demo_3.png" alt="Automation Workflow" className="h-full w-auto rounded-xl object-cover border border-[#222] shadow-2xl" />
+                    </div>
                   </motion.div>
                 </div>
                 {/* Left/Right Gradient Overlays for smooth fade out */}
