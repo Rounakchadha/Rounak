@@ -24,17 +24,17 @@ export default function Contact() {
     <section
       id="contact"
       ref={containerRef}
-      className="relative w-full min-h-[80vh] bg-[#0a0a0a] z-50 flex flex-col items-center justify-center px-6 py-24"
+      className="relative w-full min-h-screen bg-[#0a0a0a] z-50 flex flex-col items-center justify-between px-6 pt-32 pb-8"
     >
       <motion.div
         style={{ scale, opacity }}
-        className="w-full max-w-[1000px] flex flex-col items-center text-center"
+        className="w-full max-w-[1000px] flex-1 flex flex-col items-center justify-center text-center -mt-16"
       >
         <p className="font-semibold tracking-[0.2em] text-[#86868b] uppercase text-sm mb-12">
           Get in touch
         </p>
 
-        <h2 className="text-4xl md:text-6xl lg:text-8xl font-bold tracking-tighter text-[#f5f5f7] mb-8 leading-[1.1]">
+        <h2 className="text-5xl md:text-7xl lg:text-[10rem] font-bold tracking-tighter text-[#f5f5f7] mb-8 leading-[1.05]">
           Ready to build <br />
           <span className="text-[#2997ff]">something great.</span>
         </h2>
@@ -49,27 +49,25 @@ export default function Contact() {
         <div className="flex gap-8 mt-24">
           {Object.entries(profile.socials).map(([platform, url]) => {
             if (!url) return null
-            // Handle email differently if needed, but here we just render all valid string URLs
             return (
               <a
                 key={platform}
                 href={platform === 'email' ? `mailto:${url}` : url}
                 target="_blank"
                 rel="noreferrer"
-                className="text-[#86868b] font-medium text-lg capitalize hover:text-[#f5f5f7] transition-colors"
+                className="text-[#86868b] font-medium text-xl capitalize hover:text-[#f5f5f7] transition-colors"
               >
                 {platform}
               </a>
             )
           })}
         </div>
-
-        <div className="w-full border-t border-[#333] mt-24 pt-8 flex justify-between items-center text-[#515154] text-xs font-medium uppercase tracking-widest">
-          <span>&copy; {new Date().getFullYear()} {profile.name}</span>
-          <span>All Rights Reserved</span>
-        </div>
-
       </motion.div>
+
+      <div className="w-full max-w-[1200px] border-t border-[#333] pt-6 flex justify-between items-center text-[#515154] text-xs font-medium uppercase tracking-widest mt-auto">
+        <span>&copy; {new Date().getFullYear()} {profile.name}</span>
+        <span>All Rights Reserved</span>
+      </div>
     </section>
   )
 }
