@@ -59,7 +59,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-          className="text-6xl md:text-8xl lg:text-[10rem] font-bold tracking-tighter leading-[0.9] text-[#f5f5f7] mb-8"
+          className="text-7xl md:text-9xl lg:text-[12rem] font-bold tracking-tighter leading-[0.9] text-[#f5f5f7] mb-8"
         >
           Rounak<br />Chadha.
         </motion.h1>
