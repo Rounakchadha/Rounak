@@ -8,6 +8,7 @@ const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
   display: 'swap',
+  adjustFontFallback: false,
   weight: ['300', '400', '500', '600', '700', '800', '900']
 })
 
