@@ -28,7 +28,7 @@
   }
 
   html {
-    font-size: 16px; /* Lock rem base across all environments */
+    font-size: 14px; /* Globally shrinks all rem units (fonts, margins, paddings) to make site smaller */
     scroll-behavior: initial;
     /* Lenis handles smooth scroll */
     background-color: var(--bg-primary);
