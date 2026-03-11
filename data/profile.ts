@@ -15,10 +15,10 @@ export const profile = {
   summary: "Hands on experience in full stack web and software development, delivering user centric solutions across fintech, AR/VR, and analytics. Developed and deployed 5+ real-world applications, including dashboards, chatbots, and interactive tools. Skilled in applying advanced algorithms, data structures, and product thinking to create scalable, high performance systems that drive measurable user engagement.",
   
   highlights: [
-    "5+ Real-World Applications Deployed",
-    "Full-Stack Development",
-    "Fintech & AR/VR Solutions",
-    "93% Deepfake Detection Accuracy"
+    "10+ Real-World Applications Deployed",
+    "4+ years of coding experience",
+    "5+ Tech Domains",
+    "∞ Curiosity for Building"
   ],
   
   experience: [
