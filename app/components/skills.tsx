@@ -214,12 +214,16 @@ export default function Skills() {
                       <img src="/assets/ai_demo_1.jpg" alt="AI Chatbot Demo" className="h-full w-auto rounded-xl object-cover border border-[#222] shadow-2xl" />
                       <img src="/assets/ai_demo_2.jpg" alt="AI Interface" className="h-full w-auto rounded-xl object-cover border border-[#222] shadow-2xl" />
                       <img src="/assets/ai_demo_3.png" alt="Automation Workflow" className="h-full w-auto rounded-xl object-cover border border-[#222] shadow-2xl" />
+                      <img src="/assets/finfinity1.jpg" alt="Finfinity Project" className="h-full w-auto rounded-xl object-cover border border-[#222] shadow-2xl" />
+                      <img src="/assets/finfinity2.jpg" alt="Finfinity Project" className="h-full w-auto rounded-xl object-cover border border-[#222] shadow-2xl" />
                     </div>
                     {/* Second wrapper for seamless looping */}
                     <div className="flex flex-row gap-4 pr-4 shrink-0 h-full">
                       <img src="/assets/ai_demo_1.jpg" alt="AI Chatbot Demo" className="h-full w-auto rounded-xl object-cover border border-[#222] shadow-2xl" />
                       <img src="/assets/ai_demo_2.jpg" alt="AI Interface" className="h-full w-auto rounded-xl object-cover border border-[#222] shadow-2xl" />
                       <img src="/assets/ai_demo_3.png" alt="Automation Workflow" className="h-full w-auto rounded-xl object-cover border border-[#222] shadow-2xl" />
+                      <img src="/assets/finfinity1.jpg" alt="Finfinity Project" className="h-full w-auto rounded-xl object-cover border border-[#222] shadow-2xl" />
+                      <img src="/assets/finfinity2.jpg" alt="Finfinity Project" className="h-full w-auto rounded-xl object-cover border border-[#222] shadow-2xl" />
                     </div>
                   </motion.div>
                 </div>

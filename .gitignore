@@ -38,3 +38,6 @@ next-env.d.ts
 .idea/
 *.swp
 *.swo
+
+# local npm cache
+.npm_cache_local/
