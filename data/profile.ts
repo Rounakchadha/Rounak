@@ -59,79 +59,173 @@ export const profile = {
   
   projects: [
     {
-      title: "PropBot AI — Real Estate Intelligence Platform",
-      description:
-        "Developed a conversational AI chatbot for property discovery, loan eligibility checks, ROI calculations, and area insights, significantly reducing the time and effort required by home buyers.",
-      impact:
-        "Built with FastAPI, Supabase Postgres + pgvector, RAG pipelines with LLMs, and a React chat interface; optimized the backend for sub‑second responses and achieved an estimated 50% reduction in search effort.",
-      tech: ["FastAPI", "Supabase", "PostgreSQL", "pgvector", "React", "LLM", "RAG", "ML"],
-      image: "/projects/propbot-ai.jpg",
-      links: {
-        github: "#",
-        live: "#",
-      },
+      title: "VoxAssist AI IVR Agent",
+      description: "Intelligent voice-based interactive system for automated customer support.",
+      impact: "Reduced customer wait times by 60% and improved issue resolution rate.",
+      tech: ["Python", "Twilio", "OpenAI", "FastAPI"],
+      images: [
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=7162",
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=965",
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=8055"
+      ],
+      links: { github: "#", live: "#" },
     },
     {
-      title: "InsightCRM — Real-Time Analytics Dashboard",
-      description:
-        "Created a full‑stack analytics dashboard to manage 10k+ customer records and provide live visibility into revenue, churn, and user activity for operations teams.",
-      impact:
-        "Implemented with React, Node.js/FastAPI, PostgreSQL, and WebSockets; optimized SQL queries and APIs to reach sub‑second lookups and improve decision‑making speed by ~40%.",
+      title: "EngageIQ Analytics Platform",
+      description: "Advanced analytics platform for user engagement, akin to WebEngage.",
+      impact: "Provides deep insights into user journeys, increasing conversion rates.",
+      tech: ["React", "Node.js", "PostgreSQL", "Redis"],
+      images: [
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=5644",
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=7837",
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=1999"
+      ],
+      links: { github: "#", live: "#" },
+    },
+    {
+      title: "WhatsApp Chatbot for Finfinity",
+      description: "Automated customer support and lead generation chatbot over WhatsApp.",
+      impact: "Streamlined communication, capturing 3x more leads daily.",
+      tech: ["Node.js", "WhatsApp API", "MongoDB", "Express"],
+      images: [
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=646",
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=7552",
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=7814"
+      ],
+      links: { github: "#", live: "#" },
+    },
+    {
+      title: "My Personal Portfolio",
+      description: "Interactive, 3D and GSAP-animated personal portfolio to showcase projects.",
+      impact: "High engagement with a unique immersive scroll experience.",
+      tech: ["Next.js", "React", "GSAP", "Three.js"],
+      images: [
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=7593",
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=6205",
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=1352"
+      ],
+      links: { github: "#", live: "#" },
+    },
+    {
+      title: "AI Health Tracker",
+      description: "Smart health tracking application utilizing AI for personalized recommendations.",
+      impact: "Helps users track daily metrics and provides actionable insights.",
+      tech: ["React Native", "Python", "TensorFlow"],
+      images: [
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=2590",
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=5497",
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=7328"
+      ],
+      links: { github: "#", live: "#" },
+    },
+    {
+      title: "PropBot AI — Real Estate Intelligence",
+      description: "Conversational AI chatbot for property discovery, ROI calculations, and area insights.",
+      impact: "Optimized backend for sub‑second responses, reducing search effort by 50%.",
+      tech: ["FastAPI", "Supabase", "pgvector", "React", "LLM", "RAG"],
+      images: [
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=4338",
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=343",
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=986"
+      ],
+      links: { github: "#", live: "#" },
+    },
+    {
+      title: "InsightCRM — Real-Time Analytics",
+      description: "Full‑stack analytics dashboard managing 10k+ customer records with live visibility.",
+      impact: "Optimized queries reaching sub‑second lookups, improving decision speed by ~40%.",
       tech: ["React", "Node.js", "FastAPI", "PostgreSQL", "WebSockets"],
-      image: "/projects/insight-crm.jpg",
-      links: {
-        github: "#",
-        live: "#",
-      },
+      images: [
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=369",
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=6068",
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=1035"
+      ],
+      links: { github: "#", live: "#" },
     },
     {
       title: "AR/VR House Tour Application",
-      description:
-        "Developed a web‑based AR/VR house‑tour application enabling users to explore 360° panoramic property tours with interactive room transitions and smooth navigation.",
-      impact:
-        "Delivered a scalable prototype using Three.js, WebXR, and React with 3D model rendering and scene optimization to showcase how virtual property tours can improve user engagement for real estate platforms.",
+      description: "Web‑based AR/VR house‑tour application for 360° panoramic property tours.",
+      impact: "Showcases virtual property tours to improve user engagement for real estate platforms.",
       tech: ["Three.js", "WebXR", "React", "3D Rendering"],
-      image: "/projects/ar-vr-house-tour.jpg",
-      links: {
-        github: "#",
-        live: "#",
-      },
+      images: [
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=1322",
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=9791",
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=1048"
+      ],
+      links: { github: "#", live: "#" },
     },
     {
-      title: "CerviCare - Cervical Cancer Awareness Application",
-      description:
-        "Developed a responsive web application with AI-driven chatbot for immediate, interactive symptom identification and personalized guidance.",
+      title: "CerviCare - Cancer Awareness",
+      description: "Responsive web application with AI-driven chatbot for symptom identification.",
       impact: "Achieved 40% increase in user engagement through intuitive UX design.",
-      tech: ["React", "AI Chatbot", "API Integration", "Location Services"],
-      image: "/projects/cervicare.jpg",
-      links: {
-        github: "#",
-        live: "#",
-      },
+      tech: ["React", "AI Chatbot", "API Integration"],
+      images: [
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=6478",
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=5852",
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=3232"
+      ],
+      links: { github: "#", live: "#" },
     },
     {
-      title: "Deepfake Detection using CNNs and Vision Transformers",
-      description:
-        "Engineered advanced detection algorithms using convolutional and transformer-based neural networks to identify deepfake images and videos in near real-time.",
+      title: "Deepfake Detection using Neural Networks",
+      description: "Advanced detection algorithms identifying deepfake media in near real-time.",
       impact: "Achieved 93% detection accuracy with 45% reduction in processing time.",
-      tech: ["Python", "CNN", "Vision Transformers", "TensorFlow"],
-      image: "/projects/deepfake.jpg",
-      links: {
-        github: "#",
-      },
+      tech: ["Python", "CNN", "Vision Transformers"],
+      images: [
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=8437",
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=3480",
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=3061"
+      ],
+      links: { github: "#" },
     },
     {
-      title: "House Price Prediction for GreenPearl SRM",
-      description:
-        "Built a predictive model using advanced regression techniques with a React-based frontend for instant property price estimates.",
-      impact: "Reached ~80% predictive accuracy and increased user engagement by ~30%.",
-      tech: ["React", "Python", "XGBoost", "Ridge Regression", "Lasso Regression"],
-      image: "/projects/greenpearl.jpg",
-      links: {
-        github: "#",
-        live: "#",
-      },
+      title: "FinTech Calculators",
+      description: "Suite of financial calculators (ROI, EMI, SIP) for investment planning.",
+      impact: "Empowered users with quick and accurate financial projections.",
+      tech: ["React", "TypeScript", "Tailwind CSS"],
+      images: [
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=3425",
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=7635",
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=952"
+      ],
+      links: { github: "#", live: "#" },
     },
+    {
+      title: "Intranet Portal for Finfinity",
+      description: "Internal company portal for employee management and resource sharing.",
+      impact: "Streamlined internal communications and centralized documentation.",
+      tech: ["Next.js", "Node.js", "MongoDB"],
+      images: [
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=3794",
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=9640",
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=5248"
+      ],
+      links: { github: "#", live: "#" },
+    },
+    {
+      title: "Niva Infosys Website",
+      description: "Corporate website redesign for Niva Infosys.",
+      impact: "Improved brand presence and SEO ranking.",
+      tech: ["React", "Next.js", "Tailwind CSS"],
+      images: [
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=304",
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=6987",
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=3621"
+      ],
+      links: { github: "#", live: "#" },
+    },
+    {
+      title: "Infra Innovations Website",
+      description: "Full-stack company website delivering end-to-end digital presence.",
+      impact: "Implemented CDN caching and optimization to enhance site speed and SEO.",
+      tech: ["React", "Next.js", "Vercel"],
+      images: [
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=7549",
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=7456",
+        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=3424"
+      ],
+      links: { github: "#", live: "#" },
+    }
   ],
   
   skills: {
