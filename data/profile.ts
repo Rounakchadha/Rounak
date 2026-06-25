@@ -60,15 +60,15 @@ export const profile = {
   projects: [
     {
       title: "VoxAssist AI IVR Agent",
-      description: "Intelligent voice-based interactive system for automated customer support.",
+      description: "An AI-powered outbound voice intake agent for Finfinity loan services. It makes phone calls, conducts structured interviews, manages leads, and notifies Relationship Managers via n8n.",
       impact: "Reduced customer wait times by 60% and improved issue resolution rate.",
-      tech: ["Python", "Twilio", "OpenAI", "FastAPI"],
+      tech: ["Node.js", "TypeScript", "Twilio", "Groq", "n8n", "Prisma"],
       images: [
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=7162",
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=965",
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=8055"
+        "/ivr-voice-chat-1.png",
+        "/ivr-voice-chat-2.png",
+        "/ivr-voice-chat-3.png"
       ],
-      links: { github: "#", live: "#" },
+      links: { github: "https://github.com/Rounakchadha/Finfinity-AI-agent-IVR", live: "https://finfinity-ai-agent-ivr.onrender.com" },
     },
     {
       title: "EngageIQ Analytics Platform",
@@ -225,6 +225,7 @@ export const profile = {
         "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=3424"
       ],
       links: { github: "#", live: "#" },
+      video: "/infra.mp4",
     }
   ],
   
