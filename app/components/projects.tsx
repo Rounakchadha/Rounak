@@ -167,9 +167,9 @@ function ProjectCard({ project, projectIndex, totalSteps, progress }: {
       <div className="hidden md:block w-[45%] h-full relative">
         {/* Vertical separator gradient */}
         <div className="absolute left-0 inset-y-0 w-16 bg-gradient-to-r from-[#121212] to-transparent z-10 pointer-events-none" />
-        <div className="absolute inset-0 m-4 rounded-[1.2rem] overflow-hidden border border-[#222] bg-[#0a0a0a]">
+        <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 aspect-video rounded-[1.2rem] overflow-hidden border border-[#222] bg-[#0a0a0a]">
           {project.video ? (
-            <video autoPlay loop muted playsInline className="w-full h-full object-contain">
+            <video autoPlay loop muted playsInline className="w-full h-full object-cover">
               <source src={project.video} type="video/mp4" />
             </video>
           ) : (

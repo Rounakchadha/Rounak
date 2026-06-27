@@ -169,7 +169,7 @@ const ProjectRow = ({ project, index }: { project: any, index: number }) => {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.1 }}
-              className="w-full lg:w-1/2 aspect-[16/10] rounded-[2rem] overflow-hidden bg-[#111] border border-[#222] relative group/placard"
+              className="w-full lg:w-1/2 aspect-video rounded-[2rem] overflow-hidden bg-[#111] border border-[#222] relative group/placard"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-[#1c1c1c] to-[#0a0a0a] z-0" />
               
@@ -179,7 +179,7 @@ const ProjectRow = ({ project, index }: { project: any, index: number }) => {
                   loop
                   muted
                   playsInline
-                  className="absolute inset-0 w-full h-full object-contain opacity-80 group-hover/placard:opacity-100 group-hover/placard:scale-105 transition-all duration-700"
+                  className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover/placard:opacity-100 group-hover/placard:scale-105 transition-all duration-700"
                 >
                   <source src={project.video} type="video/mp4" />
                 </video>
