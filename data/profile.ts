@@ -95,11 +95,7 @@ export const profile = {
       description: "Automated customer support and lead generation chatbot over WhatsApp.",
       impact: "Streamlined communication, capturing 3x more leads daily.",
       tech: ["Node.js", "WhatsApp API", "MongoDB", "Express"],
-      images: [
-        "/assets/ai_demo_1.jpg",
-        "/assets/ai_demo_2.jpg",
-        "/assets/ai_demo_3.png"
-      ],
+      video: "/whatsapp_chatbot.mp4",
       links: { github: "#", live: "#" },
     },
     {
