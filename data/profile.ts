@@ -107,11 +107,7 @@ export const profile = {
       description: "Interactive, 3D and GSAP-animated personal portfolio to showcase projects.",
       impact: "High engagement with a unique immersive scroll experience.",
       tech: ["Next.js", "React", "GSAP", "Three.js"],
-      images: [
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=7593",
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=6205",
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=1352"
-      ],
+      video: "/personal_portfolio.mp4",
       links: { github: "#", live: "#" },
     },
     {
