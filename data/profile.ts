@@ -96,9 +96,9 @@ export const profile = {
       impact: "Streamlined communication, capturing 3x more leads daily.",
       tech: ["Node.js", "WhatsApp API", "MongoDB", "Express"],
       images: [
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=646",
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=7552",
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=7814"
+        "/assets/ai_demo_1.jpg",
+        "/assets/ai_demo_2.jpg",
+        "/assets/ai_demo_3.png"
       ],
       links: { github: "#", live: "#" },
     },
