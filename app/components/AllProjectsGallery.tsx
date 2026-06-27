@@ -34,6 +34,41 @@ function AutoCarousel({ images }: { images: string[] }) {
   )
 }
 
+function MarqueeCarousel({ images }: { images: string[] }) {
+  if (!images || images.length === 0) return null
+
+  return (
+    <div className="absolute inset-0 overflow-hidden bg-[#0a0a0ae6]">
+      <div className="relative w-full h-full overflow-hidden flex justify-start items-center pl-[50%] mask-image-horizontal gap-4">
+        <motion.div
+          className="flex flex-row h-[80%] min-h-[140px] absolute left-0"
+          animate={{ x: ["0%", "-50%"] }}
+          transition={{
+            duration: 15,
+            ease: "linear",
+            repeat: Infinity,
+          }}
+        >
+          {/* First wrapper */}
+          <div className="flex flex-row gap-4 pr-4 shrink-0 h-full">
+            {images.map((src, i) => (
+              <img key={`1-${i}`} src={src} alt="" className="h-full w-auto rounded-xl object-cover border border-[#222] shadow-2xl" />
+            ))}
+          </div>
+          {/* Second wrapper for seamless looping */}
+          <div className="flex flex-row gap-4 pr-4 shrink-0 h-full">
+            {images.map((src, i) => (
+              <img key={`2-${i}`} src={src} alt="" className="h-full w-auto rounded-xl object-cover border border-[#222] shadow-2xl" />
+            ))}
+          </div>
+        </motion.div>
+      </div>
+      <div className="absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-[#0a0a0a] to-transparent z-10 pointer-events-none" />
+      <div className="absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-[#0a0a0a] to-transparent z-10 pointer-events-none" />
+    </div>
+  )
+}
+
 const ProjectRow = ({ project, index }: { project: any, index: number }) => {
   const [isHovered, setIsHovered] = useState(false)
 
@@ -183,8 +218,14 @@ const ProjectRow = ({ project, index }: { project: any, index: number }) => {
                 >
                   <source src={project.video} type="video/mp4" />
                 </video>
+              ) : project.marqueeImages ? (
+                <div className="absolute inset-0 opacity-80 group-hover/placard:opacity-100 group-hover/placard:scale-105 transition-all duration-700">
+                  <MarqueeCarousel images={project.marqueeImages} />
+                </div>
               ) : project.images && project.images.length > 0 ? (
-                <AutoCarousel images={project.images} />
+                <div className="absolute inset-0 opacity-80 group-hover/placard:opacity-100 group-hover/placard:scale-105 transition-all duration-700">
+                  <AutoCarousel images={project.images} />
+                </div>
               ) : (
                 <div className="absolute inset-0 flex items-center justify-center">
                   <h3 className="text-[12vw] lg:text-[8vw] font-black text-[#ffffff05] uppercase tracking-tighter leading-none">
