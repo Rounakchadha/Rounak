@@ -3,75 +3,64 @@
 import { useRef, useState, useEffect } from 'react'
 import { motion, useScroll, useTransform, MotionValue, AnimatePresence } from 'framer-motion'
 import { profile } from '@/data/profile'
-import Link from 'next/link'
 
+// Only mounts the active image. Uses a cheap blur-sm fill behind object-contain
+// so there are no black bands and no expensive GPU blur compositing.
 function AutoCarousel({ images }: { images: string[] }) {
   const [index, setIndex] = useState(0)
 
   useEffect(() => {
-    if (!images || images.length === 0) return
+    if (!images || images.length <= 1) return
     const interval = setInterval(() => {
       setIndex((prev) => (prev + 1) % images.length)
-    }, 3000)
+    }, 3500)
     return () => clearInterval(interval)
   }, [images])
 
   if (!images || images.length === 0) return null
 
+  const src = images[index]
+
   return (
-    <div className="absolute inset-0 z-0 overflow-hidden opacity-30 mix-blend-screen pointer-events-none">
+    <div className="absolute inset-0 overflow-hidden rounded-[1.5rem] bg-[#0a0a0a]">
       <AnimatePresence>
-        <motion.img
-          key={index}
-          src={images[index]}
-          initial={{ opacity: 0, scale: 1.05 }}
-          animate={{ opacity: 1, scale: 1 }}
+        <motion.div
+          key={src}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 1.5, ease: "easeInOut" }}
-          className="absolute inset-0 w-full h-full object-cover"
-        />
+          transition={{ duration: 0.7, ease: 'easeInOut' }}
+          className="absolute inset-0"
+        >
+          {/* Blurred fill — blur-sm is ~10x cheaper than blur-2xl */}
+          <img src={src} className="absolute inset-0 w-full h-full object-cover blur-sm opacity-25 scale-110" aria-hidden />
+          {/* Sharp foreground — contained so nothing is cropped */}
+          <img src={src} className="absolute inset-0 w-full h-full object-contain" />
+        </motion.div>
       </AnimatePresence>
-      <div className="absolute inset-0 bg-gradient-to-t from-[#121212] via-transparent to-transparent" />
     </div>
   )
 }
 
-function ProjectBackgroundText({ title, stepIndex, totalSteps, progress }: { title: string, stepIndex: number, totalSteps: number, progress: MotionValue<number> }) {
-  const segmentSize = 1 / totalSteps
-  const start = stepIndex * segmentSize
-  const end = (stepIndex + 1) * segmentSize
+function ProjectBackgroundText({ title, stepIndex, totalSteps, progress }: {
+  title: string
+  stepIndex: number
+  totalSteps: number
+  progress: MotionValue<number>
+}) {
+  const seg = 1 / totalSteps
+  const start = stepIndex * seg
+  const end = (stepIndex + 1) * seg
 
-  // Clip path mask
   const clipPath = useTransform(
     progress,
-    [
-      Math.max(0, start - 0.05),
-      start,
-      end - 0.05,
-      end
-    ],
-    [
-      "inset(100% 0 0% 0)", // Enters from bottom reveal
-      "inset(0% 0 0% 0)",   // Fully visible
-      "inset(0% 0 0% 0)",   // Fully visible
-      "inset(0% 0 100% 0)"  // Exits top masking
-    ]
+    [Math.max(0, start - 0.05), start, end - 0.05, end],
+    ['inset(100% 0 0% 0)', 'inset(0% 0 0% 0)', 'inset(0% 0 0% 0)', 'inset(0% 0 100% 0)']
   )
-
   const y = useTransform(
     progress,
-    [
-      Math.max(0, start - 0.05),
-      start,
-      end - 0.05,
-      end
-    ],
-    [
-      "50%",   // Enters from slightly below
-      "0%",    // Centered
-      "0%",    // Centered
-      "-50%"   // Exits moving up
-    ]
+    [Math.max(0, start - 0.05), start, end - 0.05, end],
+    ['50%', '0%', '0%', '-50%']
   )
 
   return (
@@ -80,9 +69,7 @@ function ProjectBackgroundText({ title, stepIndex, totalSteps, progress }: { tit
         style={{ clipPath, y }}
         className="absolute top-1/2 left-0 -translate-y-1/2 w-full flex items-center overflow-hidden"
       >
-        <div
-          className="flex w-max animate-marquee text-[15vw] font-black text-[#fff] whitespace-nowrap leading-none tracking-tighter"
-        >
+        <div className="flex w-max animate-marquee text-[15vw] font-black text-[#fff] whitespace-nowrap leading-none tracking-tighter">
           {[...Array(8)].map((_, i) => <span key={i} className="px-10">{title.toUpperCase()}</span>)}
         </div>
       </motion.div>
@@ -90,159 +77,158 @@ function ProjectBackgroundText({ title, stepIndex, totalSteps, progress }: { tit
   )
 }
 
-function ProjectCard({ project, projectIndex, totalSteps, progress }: { project: any, projectIndex: number, totalSteps: number, progress: MotionValue<number> }) {
-  const segmentSize = 1 / totalSteps
-  // The first step (stepIndex = 0) is the "PROJECTS" heading, so the cards start at stepIndex >= 1
+function ProjectCard({ project, projectIndex, totalSteps, progress }: {
+  project: any
+  projectIndex: number
+  totalSteps: number
+  progress: MotionValue<number>
+}) {
+  const seg = 1 / totalSteps
   const stepIndex = projectIndex + 1
+  const start = stepIndex * seg
+  const end = (stepIndex + 1) * seg
 
-  const start = stepIndex * segmentSize
-  const end = (stepIndex + 1) * segmentSize
-
-  const cardAppear = start
-  const cardStraight = start + segmentSize * 0.2
-  const cardHold = start + segmentSize * 0.7
-  const cardFlip = end
+  const cardAppear   = start
+  const cardStraight = start + seg * 0.2
+  const cardHold     = start + seg * 0.7
+  const cardFlip     = end
 
   const rotateX = useTransform(
     progress,
-    [
-      Math.max(0, cardAppear - 0.01),
-      cardAppear,
-      cardStraight,
-      cardHold,
-      cardFlip,
-      Math.min(1, cardFlip + 0.01)
-    ],
+    [Math.max(0, cardAppear - 0.01), cardAppear, cardStraight, cardHold, cardFlip, Math.min(1, cardFlip + 0.01)],
     [90, 90, 0, 0, -90, -90]
   )
-
   const opacity = useTransform(
     progress,
-    [
-      cardAppear,
-      cardAppear + 0.01,
-      cardFlip - 0.01,
-      cardFlip
-    ],
+    [cardAppear, cardAppear + 0.01, cardFlip - 0.01, cardFlip],
     [0, 1, 1, 0]
   )
-
-  const pointerEvents = useTransform(
-    progress,
-    (v) => (v >= cardStraight && v <= cardHold) ? 'auto' : 'none'
+  const pointerEvents = useTransform(progress, (v) =>
+    v >= cardStraight && v <= cardFlip ? 'auto' : 'none'
   )
 
-  const projectUrl = `/project/${project.title.split('—')[0].trim().toLowerCase().replace(/[^a-z0-9]+/g, '-')}`
+  const hasLive   = project.links?.live   && project.links.live   !== '#'
+  const hasGithub = project.links?.github && project.links.github !== '#'
 
   return (
     <motion.div
-      style={{ rotateX, opacity, pointerEvents, transformStyle: 'preserve-3d', backfaceVisibility: 'hidden' }}
-      className="absolute inset-0 m-auto w-[90vw] md:w-[70vw] max-w-[1000px] h-[50vh] md:h-[65vh] flex flex-col md:flex-row p-4 bg-[#121212] rounded-[2rem] border border-[#333] shadow-[0_20px_50px_rgba(0,0,0,0.8)] overflow-hidden"
+      style={{ rotateX, opacity, pointerEvents, transformStyle: 'preserve-3d', backfaceVisibility: 'hidden', willChange: 'transform, opacity' }}
+      className="absolute inset-0 m-auto w-[88vw] md:w-[72vw] max-w-[1020px] h-[58vh] md:h-[60vh] flex flex-row bg-[#121212] rounded-[2rem] border border-[#2a2a2a] shadow-[0_24px_60px_rgba(0,0,0,0.85)] overflow-hidden"
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-[#1c1c1c] to-[#0a0a0a] z-0" />
-
-      {/* Left Text Column */}
-      <div className="relative z-10 w-full md:w-1/2 flex flex-col h-full justify-center p-6 md:p-8">
-        <div>
-          <span className="text-[#86868b] font-medium tracking-widest text-sm uppercase mb-3 block">
-            0{projectIndex + 1} — {project.tech.slice(0, 3).join(' / ')}
+      {/* Left — all content centered */}
+      <div className="relative z-10 w-full md:w-[55%] flex flex-col justify-center gap-5 p-8 md:p-10">
+        <div className="flex flex-col gap-3">
+          <span className="text-[#555] font-medium tracking-widest text-xs uppercase">
+            0{projectIndex + 1}
           </span>
-          <h3 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#f5f5f7] tracking-tight leading-tight">
+          <h3 className="text-4xl md:text-5xl font-bold text-[#f5f5f7] tracking-tight leading-[1.1]">
             {project.title.split('—')[0].trim()}
           </h3>
+          {project.description && (
+            <p className="text-[#86868b] text-sm md:text-[15px] leading-relaxed line-clamp-3 max-w-sm">
+              {project.description}
+            </p>
+          )}
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-4 mt-8">
-          {project.links?.live && (
+        <div className="flex flex-wrap gap-2">
+          {project.tech.slice(0, 5).map((t: string) => (
+            <span key={t} className="px-3 py-1 text-xs font-medium bg-[#1c1c1c] text-[#888] rounded-lg border border-[#2c2c2c]">
+              {t}
+            </span>
+          ))}
+        </div>
+
+        <div className="flex flex-wrap gap-3">
+          {hasLive && (
             <a
               href={project.links.live}
               target="_blank"
               rel="noreferrer"
-              className="px-6 py-3 bg-[#f5f5f7] text-black font-semibold text-center rounded-full hover:bg-white transition-colors text-sm"
+              className="px-7 py-3 bg-[#f5f5f7] text-black font-semibold rounded-full hover:bg-white transition-colors text-sm tracking-tight"
             >
               Live Project
             </a>
           )}
-
-          <Link
-            href={projectUrl}
-            className="px-6 py-3 bg-transparent border border-[#555] text-[#f5f5f7] font-semibold text-center rounded-full hover:bg-[#1a1a1a] transition-colors text-sm"
-          >
-            Project Details
-          </Link>
+          {hasGithub && (
+            <a
+              href={project.links.github}
+              target="_blank"
+              rel="noreferrer"
+              className="px-7 py-3 border border-[#444] text-[#f5f5f7] font-semibold rounded-full hover:bg-[#1a1a1a] transition-colors text-sm tracking-tight"
+            >
+              View Code
+            </a>
+          )}
         </div>
       </div>
 
-      {/* Right Image Column */}
-      <div className="relative z-10 hidden md:block w-1/2 h-full rounded-[1.5rem] overflow-hidden bg-[#0a0a0a] border border-[#222]">
-         <AutoCarousel images={project.images} />
+      {/* Right — image panel */}
+      <div className="hidden md:block w-[45%] h-full relative">
+        {/* Vertical separator gradient */}
+        <div className="absolute left-0 inset-y-0 w-16 bg-gradient-to-r from-[#121212] to-transparent z-10 pointer-events-none" />
+        <div className="absolute inset-0 m-4 rounded-[1.2rem] overflow-hidden border border-[#222] bg-[#0a0a0a]">
+          {project.video ? (
+            <video autoPlay loop muted playsInline className="w-full h-full object-cover">
+              <source src={project.video} type="video/mp4" />
+            </video>
+          ) : (
+            <AutoCarousel images={project.images} />
+          )}
+        </div>
       </div>
     </motion.div>
   )
 }
 
-function CtaCard({ projectIndex, totalSteps, progress }: { projectIndex: number, totalSteps: number, progress: MotionValue<number> }) {
-  const segmentSize = 1 / totalSteps
+function CtaCard({ projectIndex, totalSteps, progress }: {
+  projectIndex: number
+  totalSteps: number
+  progress: MotionValue<number>
+}) {
+  const seg = 1 / totalSteps
   const stepIndex = projectIndex + 1
+  const start = stepIndex * seg
+  const end = (stepIndex + 1) * seg
 
-  const start = stepIndex * segmentSize
-  const end = (stepIndex + 1) * segmentSize
-
-  const cardAppear = start
-  const cardStraight = start + segmentSize * 0.2
-  const cardHold = start + segmentSize * 0.7
-  const cardFlip = end
+  const cardAppear   = start
+  const cardStraight = start + seg * 0.2
+  const cardHold     = start + seg * 0.7
+  const cardFlip     = end
 
   const rotateX = useTransform(
     progress,
-    [
-      Math.max(0, cardAppear - 0.01),
-      cardAppear,
-      cardStraight,
-      cardHold,
-      cardFlip,
-      Math.min(1, cardFlip + 0.01)
-    ],
+    [Math.max(0, cardAppear - 0.01), cardAppear, cardStraight, cardHold, cardFlip, Math.min(1, cardFlip + 0.01)],
     [90, 90, 0, 0, -90, -90]
   )
-
   const opacity = useTransform(
     progress,
-    [
-      cardAppear,
-      cardAppear + 0.01,
-      cardFlip - 0.01,
-      cardFlip
-    ],
+    [cardAppear, cardAppear + 0.01, cardFlip - 0.01, cardFlip],
     [0, 1, 1, 0]
   )
-
-  const pointerEvents = useTransform(
-    progress,
-    (v) => (v >= cardStraight && v <= cardHold) ? 'auto' : 'none'
+  const pointerEvents = useTransform(progress, (v) =>
+    v >= cardStraight && v <= cardFlip ? 'auto' : 'none'
   )
 
   return (
     <motion.div
-      style={{ rotateX, opacity, pointerEvents, transformStyle: 'preserve-3d', backfaceVisibility: 'hidden' }}
-      className="absolute inset-0 m-auto w-[90vw] md:w-[60vw] max-w-[900px] h-[50vh] md:h-[60vh] flex flex-col items-center justify-center p-8 md:p-12 bg-[#121212] rounded-[2rem] border border-[#333] shadow-[0_20px_50px_rgba(0,0,0,0.8)] overflow-hidden text-center"
+      style={{ rotateX, opacity, pointerEvents, transformStyle: 'preserve-3d', backfaceVisibility: 'hidden', willChange: 'transform, opacity' }}
+      className="absolute inset-0 m-auto w-[88vw] md:w-[60vw] max-w-[900px] h-[50vh] md:h-[55vh] flex flex-col items-center justify-center gap-6 p-8 md:p-14 bg-[#121212] rounded-[2rem] border border-[#2a2a2a] shadow-[0_24px_60px_rgba(0,0,0,0.85)] text-center overflow-hidden"
     >
       <div className="absolute inset-0 bg-gradient-to-br from-[#1c1c1c] to-[#0a0a0a]" />
-
-      <div className="relative z-10 flex flex-col items-center h-full justify-center">
-        <h3 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#f5f5f7] tracking-tight mb-4">
+      <div className="relative z-10 flex flex-col items-center gap-5">
+        <h3 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#f5f5f7] tracking-tight">
           More to Explore
         </h3>
-        <p className="text-[#86868b] text-lg max-w-md mb-8">
+        <p className="text-[#86868b] text-base md:text-lg max-w-md">
           Check out the rest of my work spanning AI, full-stack development, AR/VR, and more.
         </p>
-
-        <Link
+        <a
           href="/projects"
-          className="px-8 py-4 bg-[#f5f5f7] text-black font-semibold text-center rounded-full hover:bg-white transition-colors"
+          className="px-9 py-4 bg-[#f5f5f7] text-black font-semibold rounded-full hover:bg-white transition-colors text-base"
         >
           View All Projects
-        </Link>
+        </a>
       </div>
     </motion.div>
   )
@@ -250,22 +236,16 @@ function CtaCard({ projectIndex, totalSteps, progress }: { projectIndex: number,
 
 export default function Projects() {
   const containerRef = useRef<HTMLDivElement>(null)
-  
-  // Select only the first 6 projects
-  const displayProjects = profile.projects.slice(0, 6)
-  
-  // Total cards = 6 projects + 1 CTA card
-  const totalCards = displayProjects.length + 1
 
-  // We add 1 to the steps so the first step (0) is simply the "PROJECTS" heading before any cards appear.
+  const displayProjects = profile.projects.slice(0, 6)
+  const totalCards = displayProjects.length + 1
   const totalSteps = totalCards + 1
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start start", "end end"]
+    offset: ['start start', 'end end'],
   })
 
-  // To make the background heading "PROJECTS" static while wait to scroll, we can just use the exact logic of the cards but for title.
   return (
     <section
       id="projects"
@@ -273,51 +253,35 @@ export default function Projects() {
       className="relative z-30 bg-[#000] rounded-t-[3rem] border-t border-[#111]"
       style={{ height: `${totalSteps * 100}vh` }}
     >
-      <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden bg-black" style={{ perspective: '1500px' }}>
-
-        {/* Render the initial "PROJECTS" heading text at stepIndex=0 */}
-        <ProjectBackgroundText
-          title="PROJECTS"
-          stepIndex={0}
-          totalSteps={totalSteps}
-          progress={scrollYProgress}
-        />
-
-        {/* Render all individual project background texts, masked from bottom to top */}
-        {displayProjects.map((project, index) => (
+      <div
+        className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden bg-black"
+        style={{ perspective: '1500px' }}
+      >
+        {/* Background marquee texts */}
+        <ProjectBackgroundText title="PROJECTS" stepIndex={0} totalSteps={totalSteps} progress={scrollYProgress} />
+        {displayProjects.map((project, i) => (
           <ProjectBackgroundText
-            key={index}
+            key={i}
             title={project.title.split('—')[0].trim()}
-            stepIndex={index + 1}
+            stepIndex={i + 1}
             totalSteps={totalSteps}
             progress={scrollYProgress}
           />
         ))}
+        <ProjectBackgroundText title="MORE PROJECTS" stepIndex={displayProjects.length + 1} totalSteps={totalSteps} progress={scrollYProgress} />
 
-        {/* CTA Background Text */}
-        <ProjectBackgroundText
-          title="MORE PROJECTS"
-          stepIndex={displayProjects.length + 1}
-          totalSteps={totalSteps}
-          progress={scrollYProgress}
-        />
-
-        {/* 3D Flipping Cards Container */}
+        {/* 3D flip cards — all always mounted, transforms are GPU-driven */}
         <div className="absolute inset-0 w-full h-full flex items-center justify-center" style={{ transformStyle: 'preserve-3d' }}>
-          {displayProjects.map((project, index) => (
+          {displayProjects.map((project, i) => (
             <ProjectCard
-              key={index}
+              key={i}
               project={project}
-              projectIndex={index}
+              projectIndex={i}
               totalSteps={totalSteps}
               progress={scrollYProgress}
             />
           ))}
-          <CtaCard
-            projectIndex={displayProjects.length}
-            totalSteps={totalSteps}
-            progress={scrollYProgress}
-          />
+          <CtaCard projectIndex={displayProjects.length} totalSteps={totalSteps} progress={scrollYProgress} />
         </div>
       </div>
     </section>

@@ -59,6 +59,14 @@ export const profile = {
   
   projects: [
     {
+      title: "Soumya Chadha's Portfolio",
+      description: "A modern and interactive personal portfolio website for Soumya Chadha.",
+      impact: "Showcases professional work with an engaging user experience.",
+      tech: ["Next.js", "React", "Tailwind CSS"],
+      video: "/soumya_portfolio.mp4",
+      links: { github: "https://github.com/Rounakchadha/Soumya-portfolio", live: "https://soumya-portfolio-lake.vercel.app" },
+    },
+    {
       title: "VoxAssist AI IVR Agent",
       description: "An AI-powered outbound voice intake agent for Finfinity loan services. It makes phone calls, conducts structured interviews, manages leads, and notifies Relationship Managers via n8n.",
       impact: "Reduced customer wait times by 60% and improved issue resolution rate.",

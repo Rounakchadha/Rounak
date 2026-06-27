@@ -3,33 +3,34 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { profile } from '@/data/profile'
-import { ArrowUpRight, Github } from 'lucide-react'
 
 function AutoCarousel({ images }: { images: string[] }) {
   const [index, setIndex] = useState(0)
 
   useEffect(() => {
-    if (!images || images.length === 0) return
+    if (!images || images.length <= 1) return
     const interval = setInterval(() => {
       setIndex((prev) => (prev + 1) % images.length)
-    }, 3000)
+    }, 3500)
     return () => clearInterval(interval)
   }, [images])
 
   if (!images || images.length === 0) return null
 
   return (
-    <AnimatePresence>
-      <motion.img
-        key={index}
-        src={images[index]}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 1.5, ease: "easeInOut" }}
-        className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover/placard:opacity-100 group-hover/placard:scale-105 transition-all duration-700"
-      />
-    </AnimatePresence>
+    <div className="absolute inset-0 w-full h-full overflow-hidden">
+      <AnimatePresence>
+        <motion.img
+          key={images[index]}
+          src={images[index]}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.8, ease: "easeInOut" }}
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+      </AnimatePresence>
+    </div>
   )
 }
 
@@ -172,7 +173,17 @@ const ProjectRow = ({ project, index }: { project: any, index: number }) => {
             >
               <div className="absolute inset-0 bg-gradient-to-br from-[#1c1c1c] to-[#0a0a0a] z-0" />
               
-              {project.images && project.images.length > 0 ? (
+              {project.video ? (
+                <video
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover/placard:opacity-100 group-hover/placard:scale-105 transition-all duration-700"
+                >
+                  <source src={project.video} type="video/mp4" />
+                </video>
+              ) : project.images && project.images.length > 0 ? (
                 <AutoCarousel images={project.images} />
               ) : (
                 <div className="absolute inset-0 flex items-center justify-center">
