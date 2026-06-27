@@ -113,10 +113,10 @@ function ProjectCard({ project, projectIndex, totalSteps, progress }: {
   return (
     <motion.div
       style={{ rotateX, opacity, pointerEvents, transformStyle: 'preserve-3d', backfaceVisibility: 'hidden', willChange: 'transform, opacity' }}
-      className="absolute inset-0 m-auto w-[88vw] md:w-[72vw] max-w-[1020px] h-[58vh] md:h-[60vh] flex flex-row bg-[#121212] rounded-[2rem] border border-[#2a2a2a] shadow-[0_24px_60px_rgba(0,0,0,0.85)] overflow-hidden"
+      className="absolute inset-0 m-auto w-[88vw] md:w-[72vw] max-w-[1100px] h-[58vh] md:h-[60vh] flex flex-row bg-[#121212] rounded-[2rem] border border-[#2a2a2a] shadow-[0_24px_60px_rgba(0,0,0,0.85)] overflow-hidden"
     >
       {/* Left — all content centered */}
-      <div className="relative z-10 w-full md:w-[55%] flex flex-col justify-center gap-5 p-8 md:p-10">
+      <div className="relative z-10 w-full md:w-[50%] flex flex-col justify-center gap-5 p-8 md:p-10">
         <div className="flex flex-col gap-3">
           <span className="text-[#555] font-medium tracking-widest text-xs uppercase">
             0{projectIndex + 1}
@@ -164,7 +164,7 @@ function ProjectCard({ project, projectIndex, totalSteps, progress }: {
       </div>
 
       {/* Right — image panel */}
-      <div className="hidden md:block w-[45%] h-full relative">
+      <div className="hidden md:block w-[50%] h-full relative">
         {/* Vertical separator gradient */}
         <div className="absolute left-0 inset-y-0 w-16 bg-gradient-to-r from-[#121212] to-transparent z-10 pointer-events-none" />
         <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 aspect-video rounded-[1.2rem] overflow-hidden border border-[#222] bg-[#0a0a0a]">
