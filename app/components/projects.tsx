@@ -169,7 +169,7 @@ function ProjectCard({ project, projectIndex, totalSteps, progress }: {
         <div className="absolute left-0 inset-y-0 w-16 bg-gradient-to-r from-[#121212] to-transparent z-10 pointer-events-none" />
         <div className="absolute inset-0 m-4 rounded-[1.2rem] overflow-hidden border border-[#222] bg-[#0a0a0a]">
           {project.video ? (
-            <video autoPlay loop muted playsInline className="w-full h-full object-cover">
+            <video autoPlay loop muted playsInline className="w-full h-full object-contain">
               <source src={project.video} type="video/mp4" />
             </video>
           ) : (

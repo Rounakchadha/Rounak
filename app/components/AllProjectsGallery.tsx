@@ -179,7 +179,7 @@ const ProjectRow = ({ project, index }: { project: any, index: number }) => {
                   loop
                   muted
                   playsInline
-                  className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover/placard:opacity-100 group-hover/placard:scale-105 transition-all duration-700"
+                  className="absolute inset-0 w-full h-full object-contain opacity-80 group-hover/placard:opacity-100 group-hover/placard:scale-105 transition-all duration-700"
                 >
                   <source src={project.video} type="video/mp4" />
                 </video>
