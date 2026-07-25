@@ -83,11 +83,6 @@ export const profile = {
       description: "Advanced analytics platform for user engagement, akin to WebEngage.",
       impact: "Provides deep insights into user journeys, increasing conversion rates.",
       tech: ["React", "Node.js", "PostgreSQL", "Redis"],
-      images: [
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=5644",
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=7837",
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=1999"
-      ],
       links: { github: "#", live: "#" },
     },
     {
@@ -115,11 +110,6 @@ export const profile = {
       description: "Smart health tracking application utilizing AI for personalized recommendations.",
       impact: "Helps users track daily metrics and provides actionable insights.",
       tech: ["React Native", "Python", "TensorFlow"],
-      images: [
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=2590",
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=5497",
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=7328"
-      ],
       links: { github: "#", live: "#" },
     },
     {
@@ -127,11 +117,6 @@ export const profile = {
       description: "Conversational AI chatbot for property discovery, ROI calculations, and area insights.",
       impact: "Optimized backend for sub‑second responses, reducing search effort by 50%.",
       tech: ["FastAPI", "Supabase", "pgvector", "React", "LLM", "RAG"],
-      images: [
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=4338",
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=343",
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=986"
-      ],
       links: { github: "#", live: "#" },
     },
     {
@@ -139,11 +124,6 @@ export const profile = {
       description: "Full‑stack analytics dashboard managing 10k+ customer records with live visibility.",
       impact: "Optimized queries reaching sub‑second lookups, improving decision speed by ~40%.",
       tech: ["React", "Node.js", "FastAPI", "PostgreSQL", "WebSockets"],
-      images: [
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=369",
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=6068",
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=1035"
-      ],
       links: { github: "#", live: "#" },
     },
     {
@@ -151,11 +131,6 @@ export const profile = {
       description: "Web‑based AR/VR house‑tour application for 360° panoramic property tours.",
       impact: "Showcases virtual property tours to improve user engagement for real estate platforms.",
       tech: ["Three.js", "WebXR", "React", "3D Rendering"],
-      images: [
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=1322",
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=9791",
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=1048"
-      ],
       links: { github: "#", live: "#" },
     },
     {
@@ -163,11 +138,6 @@ export const profile = {
       description: "Responsive web application with AI-driven chatbot for symptom identification.",
       impact: "Achieved 40% increase in user engagement through intuitive UX design.",
       tech: ["React", "AI Chatbot", "API Integration"],
-      images: [
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=6478",
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=5852",
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=3232"
-      ],
       links: { github: "#", live: "#" },
     },
     {
@@ -175,11 +145,6 @@ export const profile = {
       description: "Advanced detection algorithms identifying deepfake media in near real-time.",
       impact: "Achieved 93% detection accuracy with 45% reduction in processing time.",
       tech: ["Python", "CNN", "Vision Transformers"],
-      images: [
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=8437",
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=3480",
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=3061"
-      ],
       links: { github: "#" },
     },
     {
@@ -187,11 +152,6 @@ export const profile = {
       description: "Suite of financial calculators (ROI, EMI, SIP) for investment planning.",
       impact: "Empowered users with quick and accurate financial projections.",
       tech: ["React", "TypeScript", "Tailwind CSS"],
-      images: [
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=3425",
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=7635",
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=952"
-      ],
       links: { github: "#", live: "#" },
     },
     {
@@ -199,11 +159,6 @@ export const profile = {
       description: "Internal company portal for employee management and resource sharing.",
       impact: "Streamlined internal communications and centralized documentation.",
       tech: ["Next.js", "Node.js", "MongoDB"],
-      images: [
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=3794",
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=9640",
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=5248"
-      ],
       links: { github: "#", live: "#" },
     },
     {
@@ -211,11 +166,6 @@ export const profile = {
       description: "Corporate website redesign for Niva Infosys.",
       impact: "Improved brand presence and SEO ranking.",
       tech: ["React", "Next.js", "Tailwind CSS"],
-      images: [
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=304",
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=6987",
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=3621"
-      ],
       links: { github: "#", live: "#" },
     },
     {
@@ -223,11 +173,6 @@ export const profile = {
       description: "Full-stack company website delivering end-to-end digital presence.",
       impact: "Implemented CDN caching and optimization to enhance site speed and SEO.",
       tech: ["React", "Next.js", "Vercel"],
-      images: [
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=7549",
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=7456",
-        "https://loremflickr.com/800/600/tech,dashboard,abstract?lock=3424"
-      ],
       links: { github: "#", live: "#" },
       video: "/infra.mp4",
     }

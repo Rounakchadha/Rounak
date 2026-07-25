@@ -209,8 +209,14 @@ function ProjectCard({ project, projectIndex, totalSteps, progress }: {
             </video>
           ) : project.marqueeImages ? (
             <MarqueeCarousel images={project.marqueeImages} />
-          ) : (
+          ) : project.images && project.images.length > 0 ? (
             <AutoCarousel images={project.images} />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <h3 className="text-[15vw] md:text-[10vw] font-black text-[#ffffff05] uppercase tracking-tighter leading-none">
+                {project.title.substring(0, 2)}
+              </h3>
+            </div>
           )}
         </div>
       </div>
