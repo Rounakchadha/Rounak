@@ -1,10 +1,11 @@
 'use client'
 
 import { useRef, useEffect, useState } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { motion, useMotionValue, useTransform } from 'framer-motion'
 import { profile } from '@/data/profile'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { getLenis } from '@/lib/lenis'
 
 export default function TechnicalSkills() {
     const containerRef = useRef<HTMLDivElement>(null)
@@ -19,12 +20,50 @@ export default function TechnicalSkills() {
     }, [])
 
     // marquee text
-    const { scrollYProgress: textScroll } = useScroll({
-        target: textSectionRef,
-        offset: ['start end', 'end start'],
-    })
-    const textX = useTransform(textScroll, [0, 1], [200, -1200])
-    const textX2 = useTransform(textScroll, [0, 1], [-1200, 200])
+    //
+    // Framer Motion's own useScroll() tracks window scroll with its own rAF
+    // listener, which runs as a separate loop from Lenis's rAF loop that's
+    // actually driving the scroll position. Two independent loops reading/
+    // writing the same value a frame apart is what read as a wobble — no
+    // amount of spring-smoothing the output fixes a mismatch in the input.
+    // Instead, compute progress directly inside Lenis's own scroll callback,
+    // so this updates on the exact same tick Lenis uses, once.
+    const textProgress = useMotionValue(0)
+    useEffect(() => {
+        const el = textSectionRef.current
+        if (!el) return
+
+        const compute = () => {
+            const rect = el.getBoundingClientRect()
+            const vh = window.innerHeight
+            const total = rect.height + vh
+            const traveled = vh - rect.top
+            textProgress.set(Math.min(1, Math.max(0, traveled / total)))
+        }
+
+        let unsubscribe: (() => void) | undefined
+        // Defer to the next frame — this component's mount effect runs before
+        // SmoothScroll's (children mount before parents), so Lenis may not
+        // exist yet if we call getLenis() synchronously here.
+        const rafId = requestAnimationFrame(() => {
+            const lenis = getLenis()
+            if (lenis) {
+                unsubscribe = lenis.on('scroll', compute)
+            } else {
+                window.addEventListener('scroll', compute, { passive: true })
+                unsubscribe = () => window.removeEventListener('scroll', compute)
+            }
+            compute()
+        })
+
+        return () => {
+            cancelAnimationFrame(rafId)
+            unsubscribe?.()
+        }
+    }, [textProgress])
+
+    const textX = useTransform(textProgress, [0, 1], [200, -1200])
+    const textX2 = useTransform(textProgress, [0, 1], [-1200, 200])
 
     const skillCards = Object.entries(profile.skills).map(([category, skills], index) => ({
         title: category.toUpperCase(),

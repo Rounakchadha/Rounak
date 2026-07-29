@@ -5,6 +5,7 @@ import { profile } from '@/data/profile'
 import { usePathname, useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
+import { resolveSectionId, scrollToSection } from '@/lib/scrollToSection'
 
 export default function NavBar() {
     const links = ['About', 'Experience', 'Projects', 'Skills', 'Contact']
@@ -37,20 +38,9 @@ export default function NavBar() {
 
     const handleScroll = (id: string) => {
         if (pathname === '/') {
-            const el = document.getElementById(id.toLowerCase())
-            if (el) {
-                if (id.toLowerCase() === 'projects') {
-                    // To show the first project 'open' in the 3D scroll timeline,
-                    // we need to scroll exactly past the "PROJECTS" title slide.
-                    // The calculation for the first card's "straight" point is 1.05 * windowHeight into the section.
-                    const top = el.getBoundingClientRect().top + window.scrollY + (window.innerHeight * 1.05)
-                    window.scrollTo({ top, behavior: 'smooth' })
-                } else {
-                    el.scrollIntoView({ behavior: 'smooth' })
-                }
-            }
+            scrollToSection(id)
         } else {
-            router.push('/#' + id.toLowerCase())
+            router.push('/#' + resolveSectionId(id))
         }
     }
 

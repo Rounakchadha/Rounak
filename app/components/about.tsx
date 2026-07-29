@@ -43,7 +43,7 @@ export default function About() {
                         <h2 className="text-xl md:text-3xl lg:text-4xl font-medium leading-[1.6] tracking-tight text-center md:text-justify w-full [text-align-last:center] md:[text-align-last:left]">
                             {words.map((word, i) => {
                                 // Calculate a staggered highlight effect based on scroll position
-                                const start = 0.2 + (i / words.length) * 0.4
+                                const start = 0.15 + (i / words.length) * 0.25
                                 const end = start + 0.1
                                 // eslint-disable-next-line react-hooks/rules-of-hooks
                                 const opacity = useTransform(scrollYProgress, [start, end], [0.2, 1])
@@ -69,10 +69,12 @@ export default function About() {
                 {/* Stats / Highlights grid appearing after text */}
                 <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-8 mt-32 border-t border-[#333] pt-16">
                     {profile.highlights.map((highlight, index) => {
+                        const statStart = 0.25 + (index * 0.05)
+                        const statEnd = statStart + 0.1
                         // eslint-disable-next-line react-hooks/rules-of-hooks
-                        const statOpacity = useTransform(scrollYProgress, [0.4 + (index * 0.05), 0.5 + (index * 0.05)], [0, 1])
+                        const statOpacity = useTransform(scrollYProgress, [statStart, statEnd], [0, 1])
                         // eslint-disable-next-line react-hooks/rules-of-hooks
-                        const statY = useTransform(scrollYProgress, [0.4 + (index * 0.05), 0.5 + (index * 0.05)], [20, 0])
+                        const statY = useTransform(scrollYProgress, [statStart, statEnd], [20, 0])
 
                         return (
                             <motion.div
@@ -82,10 +84,10 @@ export default function About() {
                             >
                                 <div className="text-[#2997ff] text-2xl md:text-3xl font-bold mb-2">
                                     {/* Extract leading number if present for impact */}
-                                    {highlight.match(/^[\d+%]+/) ? highlight.match(/^[\d+%]+/)?.[0] : "•"}
+                                    {highlight.match(/^[\d+%∞]+/) ? highlight.match(/^[\d+%∞]+/)?.[0] : "•"}
                                 </div>
                                 <div className="text-[#86868b] text-sm md:text-base font-medium leading-snug">
-                                    {highlight.replace(/^[\d+%]+\s*/, '')}
+                                    {highlight.replace(/^[\d+%∞]+\s*/, '')}
                                 </div>
                             </motion.div>
                         )

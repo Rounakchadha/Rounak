@@ -1,7 +1,6 @@
 'use client'
 
-import { useRef } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { profile } from '@/data/profile'
 import {
   PenLine,
@@ -17,47 +16,6 @@ import {
 } from 'lucide-react'
 
 export default function Skills() {
-  const ref = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"]
-  })
-
-  // Deep parallax for the background grid to give it an immense sense of scale
-  const y = useTransform(scrollYProgress, [0, 1], ["-20%", "20%"])
-  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0])
-
-  const services = [
-    {
-      title: "UI/UX & Interactive Design",
-      description: "Crafting pixel-perfect, engaging interfaces with complex animations and 3D rendering (Three.js/WebXR) that captivate and convert users.",
-      span: "lg:col-span-8",
-      icon: "✨",
-      hasImage: true,
-    },
-    {
-      title: "DevOps & Cloud Infrastructure",
-      description: "Deploying robust, secure, and optimized architectures using modern CI/CD pipelines, Docker, and reliable cloud hosting.",
-      span: "lg:col-span-4",
-      icon: "☁️",
-      hasImage: false,
-    },
-    {
-      title: "Full-Stack Web Development",
-      description: "Building high-performance, scalable web applications with React, Next.js, and modern backends. Combining aesthetic design with robust API integration.",
-      span: "lg:col-span-4",
-      icon: "🌐",
-      hasImage: false,
-    },
-    {
-      title: "AI & Automation Systems",
-      description: "Designing smart chatbot integrations and RAG pipelines for intelligent, automated workflows to streamline your business operations.",
-      span: "lg:col-span-8",
-      icon: "🤖",
-      hasImage: true,
-    }
-  ]
-
   const servicePills = [
     { name: "Copywriting", icon: PenLine },
     { name: "CMS Setup", icon: Database },
@@ -74,21 +32,25 @@ export default function Skills() {
   return (
     <section
       id="skills"
-      ref={ref}
-      className="relative z-40 bg-[#0a0a0a] overflow-hidden py-10 md:py-16 rounded-t-[3rem] shadow-[0_-20px_50px_rgba(0,0,0,0.8)]"
+      className="relative z-40 bg-[#0a0a0a] overflow-hidden rounded-t-[3rem] shadow-[0_-20px_50px_rgba(0,0,0,0.8)]"
     >
-      <div className="w-full mx-auto px-6 md:px-12 xl:px-24 relative z-10 flex flex-col items-center">
+      {/* Bento box — sized to fill the screen below the sticky navbar on desktop so
+          it reads as one complete frame instead of spilling past the fold. */}
+      <div className="w-full lg:h-[calc(100vh-80px)] lg:min-h-[640px] flex flex-col justify-center px-6 md:px-12 xl:px-24 py-8 lg:py-6 relative z-10">
 
-        <div className="w-full flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-6">
-          <motion.h2
-            style={{ opacity }}
-            className="text-[7.5vw] md:text-5xl lg:text-5xl xl:text-6xl font-bold tracking-tight text-[#f5f5f7] whitespace-nowrap"
-          >
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.5 }}
+          className="w-full shrink-0 flex flex-col md:flex-row justify-between items-start md:items-end mb-5 md:mb-8 gap-4"
+        >
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-[#f5f5f7] whitespace-nowrap">
             How I Can Help Your Business
-          </motion.h2>
+          </h2>
           <a
             href={`mailto:${profile.email}`}
-            className="group relative inline-flex items-center justify-center overflow-hidden rounded-full border border-[#333] bg-black px-10 py-4 text-base md:text-lg font-semibold transition-all duration-500 hover:bg-[#f5f5f7] shrink-0"
+            className="group relative inline-flex items-center justify-center overflow-hidden rounded-full border border-[#333] bg-black px-7 py-3 text-sm md:text-base font-semibold transition-all duration-500 hover:bg-[#f5f5f7] shrink-0"
           >
             <div className="relative flex overflow-hidden">
               <span className="inline-block text-[#f5f5f7] transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-y-[150%] md:group-hover:-translate-y-[120%]">
@@ -99,20 +61,23 @@ export default function Skills() {
               </span>
             </div>
           </a>
-        </div>
+        </motion.div>
 
         {/* Bento Grid layout based on the reference */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full mb-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-5 w-full lg:flex-1 lg:min-h-0">
 
           {/* Left Column */}
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-4 lg:gap-5 lg:h-full">
 
             {/* Top Left: Large Image Card */}
             <motion.div
-              style={{ y: useTransform(scrollYProgress, [0.1, 0.3], [50, 0]), opacity: useTransform(scrollYProgress, [0.1, 0.3], [0, 1]) }}
-              className="bg-[#121212] border border-[#222] rounded-3xl p-6 md:p-8 transition-all duration-500 hover:bg-[#151515] hover:border-[#444] group flex flex-col flex-1 min-h-[400px]"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.5 }}
+              className="bg-[#121212] border border-[#222] rounded-3xl p-6 md:p-7 transition-all duration-500 hover:bg-[#151515] hover:border-[#444] group flex flex-col flex-1 min-h-[280px] lg:min-h-0"
             >
-              <div className="flex items-center gap-4 mb-4 relative z-10">
+              <div className="flex items-center gap-3 mb-3 relative z-10 shrink-0">
                 <span className="text-2xl text-[#f5f5f7]">
                   ✨
                 </span>
@@ -120,15 +85,15 @@ export default function Skills() {
                   UI/UX & Interactive Design
                 </h3>
               </div>
-              <p className="text-[#86868b] text-sm md:text-base leading-relaxed mb-6 relative z-10 max-w-lg">
+              <p className="text-[#86868b] text-sm md:text-base leading-relaxed mb-4 relative z-10 max-w-lg shrink-0">
                 Crafting pixel-perfect, engaging interfaces with complex animations and 3D rendering (Three.js/WebXR) that captivate and convert users.
               </p>
               {/* Marquee Carousel for UI/UX */}
-              <div className="w-full mt-auto h-48 md:h-64 rounded-2xl bg-[#0a0a0ae6] border border-[#222] relative overflow-hidden group-hover:border-[#333] transition-colors duration-500 flex items-center justify-center p-4">
+              <div className="w-full flex-1 min-h-[90px] rounded-2xl bg-[#0a0a0ae6] border border-[#222] relative overflow-hidden group-hover:border-[#333] transition-colors duration-500 flex items-center justify-center p-3">
                 {/* Horizontal Scrolling Marquee container */}
                 <div className="relative w-full h-full overflow-hidden flex justify-start items-center pl-[50%] mask-image-horizontal gap-4">
                   <motion.div
-                    className="flex flex-row h-[80%] min-h-[140px] absolute left-0"
+                    className="flex flex-row h-[80%] absolute left-0"
                     animate={{ x: ["0%", "-50%"] }}
                     transition={{
                       duration: 15,
@@ -158,10 +123,13 @@ export default function Skills() {
 
             {/* Bottom Left: Small Text Card */}
             <motion.div
-              style={{ y: useTransform(scrollYProgress, [0.15, 0.35], [50, 0]), opacity: useTransform(scrollYProgress, [0.15, 0.35], [0, 1]) }}
-              className="bg-[#121212] border border-[#222] rounded-3xl p-6 md:p-8 transition-all duration-500 hover:bg-[#151515] hover:border-[#444] group flex flex-col justify-center min-h-[250px]"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.5, delay: 0.08 }}
+              className="bg-[#121212] border border-[#222] rounded-3xl p-6 md:p-7 transition-all duration-500 hover:bg-[#151515] hover:border-[#444] group flex flex-col justify-center min-h-[150px]"
             >
-              <div className="flex items-center gap-4 mb-4 relative z-10">
+              <div className="flex items-center gap-3 mb-3 relative z-10">
                 <span className="text-2xl text-[#f5f5f7]">
                   🌐
                 </span>
@@ -177,14 +145,17 @@ export default function Skills() {
           </div>
 
           {/* Right Column */}
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-4 lg:gap-5 lg:h-full">
 
             {/* Top Right: Text Card with small image area */}
             <motion.div
-              style={{ y: useTransform(scrollYProgress, [0.2, 0.4], [50, 0]), opacity: useTransform(scrollYProgress, [0.2, 0.4], [0, 1]) }}
-              className="bg-[#121212] border border-[#222] rounded-3xl p-6 md:p-8 transition-all duration-500 hover:bg-[#151515] hover:border-[#444] group flex flex-col min-h-[300px]"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.5, delay: 0.04 }}
+              className="bg-[#121212] border border-[#222] rounded-3xl p-6 md:p-7 transition-all duration-500 hover:bg-[#151515] hover:border-[#444] group flex flex-col justify-center min-h-[150px]"
             >
-              <div className="flex items-center gap-4 mb-4 relative z-10">
+              <div className="flex items-center gap-3 mb-3 relative z-10">
                 <span className="text-2xl text-[#f5f5f7]">
                   ☁️
                 </span>
@@ -192,17 +163,20 @@ export default function Skills() {
                   DevOps & Cloud Infrastructure
                 </h3>
               </div>
-              <p className="text-[#86868b] text-sm md:text-base leading-relaxed mb-6 relative z-10 max-w-lg">
+              <p className="text-[#86868b] text-sm md:text-base leading-relaxed relative z-10 max-w-lg">
                 Deploying robust, secure, and optimized architectures using modern CI/CD pipelines, Docker, and reliable cloud hosting.
               </p>
             </motion.div>
 
             {/* Bottom Right: Tall Image Card */}
             <motion.div
-              style={{ y: useTransform(scrollYProgress, [0.25, 0.45], [50, 0]), opacity: useTransform(scrollYProgress, [0.25, 0.45], [0, 1]) }}
-              className="bg-[#121212] border border-[#222] rounded-3xl p-6 md:p-8 transition-all duration-500 hover:bg-[#151515] hover:border-[#444] group flex flex-col flex-1 min-h-[450px]"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.5, delay: 0.12 }}
+              className="bg-[#121212] border border-[#222] rounded-3xl p-6 md:p-7 transition-all duration-500 hover:bg-[#151515] hover:border-[#444] group flex flex-col flex-1 min-h-[280px] lg:min-h-0"
             >
-              <div className="flex items-center gap-4 mb-4 relative z-10">
+              <div className="flex items-center gap-3 mb-3 relative z-10 shrink-0">
                 <span className="text-2xl text-[#f5f5f7]">
                   🤖
                 </span>
@@ -210,11 +184,11 @@ export default function Skills() {
                   AI & Automation Systems
                 </h3>
               </div>
-              <p className="text-[#86868b] text-sm md:text-base leading-relaxed mb-6 relative z-10 max-w-lg">
+              <p className="text-[#86868b] text-sm md:text-base leading-relaxed mb-4 relative z-10 max-w-lg shrink-0">
                 Designing smart chatbot integrations and RAG pipelines for intelligent, automated workflows to streamline your business operations.
               </p>
               {/* Tall Image Placeholder with Video */}
-              <div className="w-full mt-auto h-64 md:h-80 rounded-2xl bg-gradient-to-br from-[#1c1c1c] to-[#0a0a0a] border border-[#222] relative overflow-hidden group-hover:border-[#333] transition-colors duration-500 flex items-center justify-center p-0">
+              <div className="w-full flex-1 min-h-[90px] rounded-2xl bg-gradient-to-br from-[#1c1c1c] to-[#0a0a0a] border border-[#222] relative overflow-hidden group-hover:border-[#333] transition-colors duration-500 flex items-center justify-center p-0">
                 <video
                   autoPlay
                   loop
@@ -235,8 +209,9 @@ export default function Skills() {
 
       </div>
 
-      {/* Infinite Scrolling Marquee for Services */}
-      <div className="w-full relative py-8 bg-[#0a0a0a] flex flex-col gap-4 overflow-hidden">
+      {/* Infinite Scrolling Marquee for Services — deliberately outside the
+          viewport-fit wrapper above; it's free to flow below the fold. */}
+      <div className="w-full relative py-6 bg-[#0a0a0a] flex flex-col gap-3 overflow-hidden">
         {/* Gradients to fade the edges */}
         <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-[#0a0a0a] to-transparent z-10 pointer-events-none" />
         <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-[#0a0a0a] to-transparent z-10 pointer-events-none" />
@@ -249,9 +224,9 @@ export default function Skills() {
             return (
               <div
                 key={`row1-${pill.name}-${index}`}
-                className="px-8 py-4 mx-3 rounded-full bg-[#1a1a1c] border border-[#333] text-[#c1c1c6] text-base font-semibold whitespace-nowrap flex items-center gap-4 transition-colors hover:bg-[#222] hover:border-[#555] hover:text-[#f5f5f7]"
+                className="px-6 py-3 mx-2.5 rounded-full bg-[#1a1a1c] border border-[#333] text-[#c1c1c6] text-sm md:text-base font-semibold whitespace-nowrap flex items-center gap-3 transition-colors hover:bg-[#222] hover:border-[#555] hover:text-[#f5f5f7]"
               >
-                <Icon className="w-5 h-5 text-[#86868b]" strokeWidth={2} />
+                <Icon className="w-4 h-4 md:w-5 md:h-5 text-[#86868b]" strokeWidth={2} />
                 {pill.name}
               </div>
             )
@@ -266,9 +241,9 @@ export default function Skills() {
             return (
               <div
                 key={`row2-${pill.name}-${index}`}
-                className="px-8 py-4 mx-3 rounded-full bg-[#1a1a1c] border border-[#333] text-[#c1c1c6] text-base font-semibold whitespace-nowrap flex items-center gap-4 transition-colors hover:bg-[#222] hover:border-[#555] hover:text-[#f5f5f7]"
+                className="px-6 py-3 mx-2.5 rounded-full bg-[#1a1a1c] border border-[#333] text-[#c1c1c6] text-sm md:text-base font-semibold whitespace-nowrap flex items-center gap-3 transition-colors hover:bg-[#222] hover:border-[#555] hover:text-[#f5f5f7]"
               >
-                <Icon className="w-5 h-5 text-[#86868b]" strokeWidth={2} />
+                <Icon className="w-4 h-4 md:w-5 md:h-5 text-[#86868b]" strokeWidth={2} />
                 {pill.name}
               </div>
             )

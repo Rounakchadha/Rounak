@@ -2,10 +2,20 @@
 
 import { ReactNode, useEffect } from 'react'
 import Lenis from 'lenis'
+import { setLenis } from '@/lib/lenis'
+import { scrollToSection } from '@/lib/scrollToSection'
 
 export default function SmoothScroll({ children }: { children: ReactNode }) {
   useEffect(() => {
-    window.scrollTo(0, 0)
+    // Only force-reset to the top when there's no #section in the URL —
+    // otherwise this used to unconditionally run and stomp on the browser's
+    // native scroll-to-hash whenever a nav link routed in from another page
+    // (router.push('/#contact')), which is why anchor links worked or failed
+    // depending on which one won the race.
+    const hash = window.location.hash.slice(1)
+    if (!hash) {
+      window.scrollTo(0, 0)
+    }
 
     const lenis = new Lenis({
       duration: 1.5, // Slower, Apple-like velvety scroll
@@ -17,6 +27,8 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
       touchMultiplier: 2,
     })
 
+    setLenis(lenis)
+
     function raf(time: number) {
       lenis.raf(time)
       requestAnimationFrame(raf)
@@ -24,7 +36,14 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
 
     requestAnimationFrame(raf)
 
+    if (hash) {
+      // Wait a frame so the layout (and the scroll-jacked Projects section's
+      // height) is measured before we compute a scroll target.
+      requestAnimationFrame(() => scrollToSection(hash))
+    }
+
     return () => {
+      setLenis(null)
       lenis.destroy()
     }
   }, [])

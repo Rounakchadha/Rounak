@@ -10,17 +10,32 @@ function ExperienceCard({ exp, index, totalCards, progress }: { exp: any, index:
 
   const isLast = index === totalCards - 1
 
-  const targetScale = isLast ? 1 : 1 - ((totalCards - index) * 0.05)
-  const range = [index * (1 / totalCards), (index + 0.5) * (1 / totalCards)]
-  const scale = useTransform(progress, range, [1, targetScale])
+  // Total scrollable distance for the container
+  const scrollableDistance = (totalCards * 100) - 80
 
-  // Fade out the content of the old card much later, only when the new one has almost fully arrived.
-  // The last card should never fade out its content.
-  const fadeOutRange = [(index + 0.8) * (1 / totalCards), (index + 1) * (1 / totalCards)]
-  const contentOpacity = useTransform(progress, fadeOutRange, [1, isLast ? 1 : 0])
+  // Distance when the *next* card (or next section) hits the top of the viewport
+  const nextCardHitTopDistance = (index + 1) * 100 + 20
+
+  // Distance when the *next* card enters the bottom of the viewport
+  const nextCardEnterBottomDistance = nextCardHitTopDistance - 100
+
+  // Progress percentages
+  const pScaleStart = nextCardEnterBottomDistance / scrollableDistance
+  const pScaleEnd = nextCardHitTopDistance / scrollableDistance
+
+  const targetScale = isLast ? 1 : 1 - ((totalCards - index) * 0.05)
+  const scaleRange = isLast ? [0, 1] : [pScaleStart, pScaleEnd]
+  const scale = useTransform(progress, scaleRange, [1, targetScale])
+
+  // Fade out the content only when the next card is covering 70% of the screen
+  const fadeOutStartDistance = nextCardHitTopDistance - 30
+  const pFadeOutStart = fadeOutStartDistance / scrollableDistance
+  const contentOpacityRange = isLast ? [0, 1] : [pFadeOutStart, pScaleEnd]
+  const contentOpacity = useTransform(progress, contentOpacityRange, [1, isLast ? 1 : 0])
 
   // Keep card background relatively opaque so it maintains the "stack" look
-  const opacity = useTransform(progress, range, [1, 1])
+  const opacityRange = isLast ? [0, 1] : [pScaleStart, pScaleEnd]
+  const opacity = useTransform(progress, opacityRange, [1, 1])
 
   return (
     <div className="h-screen w-full flex items-center justify-center sticky top-0">
@@ -81,10 +96,6 @@ export default function Experience() {
       id="experience"
       ref={containerRef}
       className="relative w-full bg-black z-20"
-      style={{
-        // Height = (Number of cards + 1) * 100vh so they have room to stick and compress
-        height: `${(profile.experience.length + 1) * 100}vh`
-      }}
     >
       <div className="absolute top-0 left-0 bottom-0 w-full pointer-events-none z-0">
         <div className="sticky top-0 h-screen flex justify-center overflow-hidden w-full">
@@ -97,7 +108,7 @@ export default function Experience() {
         </div>
       </div>
 
-      <div className="w-full h-full px-6 flex flex-col items-center relative z-10 pt-[20vh]">
+      <div className="w-full px-6 flex flex-col items-center relative z-10 pt-[20vh]">
         {profile.experience.map((exp, index) => (
           <ExperienceCard
             key={index}
