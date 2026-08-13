@@ -1,7 +1,9 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { useRef, useState, useEffect } from 'react'
+import { motion, useMotionValue, useAnimationFrame } from 'framer-motion'
 import { profile } from '@/data/profile'
+import { useIsMobile } from '@/lib/useIsMobile'
 import {
   PenLine,
   Database,
@@ -15,7 +17,145 @@ import {
   LayoutDashboard
 } from 'lucide-react'
 
+function DraggableMarquee({ children, speed = 1.0, direction = "left", reverseOffset = false }: any) {
+  const x = useMotionValue(0)
+  const trackRef = useRef<HTMLDivElement>(null)
+  const wrapRef = useRef<HTMLDivElement>(null)
+
+  const [isHovered, setIsHovered] = useState(false)
+  const isDraggingRef = useRef(false)
+  const isMomentumRef = useRef(false)
+  const isInViewRef = useRef(false)
+  const [setContentWidth, setSetContentWidth] = useState(0)
+
+  useEffect(() => {
+    const updateWidth = () => {
+      if (trackRef.current) {
+        // We render 6 sets, so one set is scrollWidth / 6
+        setSetContentWidth(trackRef.current.scrollWidth / 6)
+      }
+    }
+    updateWidth()
+    const timeout = setTimeout(updateWidth, 100)
+    window.addEventListener("resize", updateWidth)
+    return () => {
+      clearTimeout(timeout)
+      window.removeEventListener("resize", updateWidth)
+    }
+  }, [])
+
+  // This autoplay loop otherwise runs on every animation frame for the
+  // component's entire mounted lifetime — never pausing even when scrolled
+  // far away — which means it's permanently competing with the browser for
+  // main-thread time during every scroll gesture on the page, not just while
+  // this marquee is visible. Gating it to only run near the viewport doesn't
+  // change anything about how it looks or moves while actually in view.
+  useEffect(() => {
+    const el = wrapRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => { isInViewRef.current = entry.isIntersecting },
+      { rootMargin: '200px 0px' }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
+  useAnimationFrame((t, delta) => {
+    if (!isInViewRef.current || isDraggingRef.current || isHovered) return
+
+    // Let the native momentum spring finish naturally
+    if (isMomentumRef.current) {
+      if (Math.abs(x.getVelocity()) < 10) {
+        isMomentumRef.current = false
+      }
+      return
+    }
+
+    // Normal auto-scroll
+    if (setContentWidth > 0) {
+      let moveBy = speed * (delta / 16)
+      if (direction === "right") {
+        x.set(x.get() + moveBy)
+      } else {
+        x.set(x.get() - moveBy)
+      }
+    }
+  })
+
+  useEffect(() => {
+    return x.on("change", (latest) => {
+      if (setContentWidth > 0) {
+        let v = x.getVelocity()
+
+        if (latest > -setContentWidth) {
+          x.set(latest - setContentWidth * 2)
+        } else if (latest <= -setContentWidth * 4) {
+          x.set(latest + setContentWidth * 2)
+        }
+        else if (Math.abs(v) < 150 && !isDraggingRef.current) {
+          if (latest > -setContentWidth * 2) {
+            x.set(latest - setContentWidth)
+          } else if (latest <= -setContentWidth * 3) {
+            x.set(latest + setContentWidth)
+          }
+        }
+      }
+    })
+  }, [x, setContentWidth])
+
+  return (
+    <div
+      ref={wrapRef}
+      className="relative w-full overflow-hidden cursor-grab active:cursor-grabbing"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onTouchStart={() => setIsHovered(true)}
+      onTouchEnd={() => setIsHovered(false)}
+    >
+      <motion.div 
+        ref={trackRef}
+        className="flex w-max"
+        style={{ x, marginLeft: reverseOffset ? '-50vw' : '0' }}
+        drag="x"
+        onDragStart={() => {
+          isDraggingRef.current = true
+          isMomentumRef.current = false
+        }}
+        onDragEnd={() => {
+          isDraggingRef.current = false
+          isMomentumRef.current = true
+        }}
+        dragMomentum={true}
+      >
+        {children}
+      </motion.div>
+    </div>
+  )
+}
+
+function MobileMarqueeRow({ items, direction, speed, reverseOffset }: any) {
+  const allItems = [...items, ...items, ...items, ...items, ...items, ...items]
+  return (
+    <DraggableMarquee direction={direction} speed={speed} reverseOffset={reverseOffset}>
+      {allItems.map((pill: any, index: number) => {
+        const Icon = pill.icon
+        return (
+          <div
+            key={`row-${pill.name}-${index}`}
+            className="px-6 py-3 mx-2.5 rounded-full bg-[#1a1a1c] border border-[#333] text-[#c1c1c6] text-sm md:text-base font-semibold whitespace-nowrap flex items-center gap-3 transition-colors hover:bg-[#222] hover:border-[#555] hover:text-[#f5f5f7]"
+          >
+            <Icon className="w-4 h-4 md:w-5 md:h-5 text-[#86868b]" strokeWidth={2} />
+            {pill.name}
+          </div>
+        )
+      })}
+    </DraggableMarquee>
+  )
+}
+
 export default function Skills() {
+  const isMobile = useIsMobile()
   const servicePills = [
     { name: "Copywriting", icon: PenLine },
     { name: "CMS Setup", icon: Database },
@@ -31,8 +171,8 @@ export default function Skills() {
 
   return (
     <section
-      id="skills"
-      className="relative z-40 bg-[#0a0a0a] overflow-hidden rounded-t-[3rem] shadow-[0_-20px_50px_rgba(0,0,0,0.8)]"
+      id="services"
+      className="relative z-40 bg-[#0a0a0a] overflow-hidden"
     >
       {/* Bento box — sized to fill the screen below the sticky navbar on desktop so
           it reads as one complete frame instead of spilling past the fold. */}
@@ -216,39 +356,48 @@ export default function Skills() {
         <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-[#0a0a0a] to-transparent z-10 pointer-events-none" />
         <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-[#0a0a0a] to-transparent z-10 pointer-events-none" />
 
-        {/* Row 1: Moving Left */}
-        <div className="flex w-max animate-marquee hover:[animation-play-state:paused] cursor-default" style={{ animationDuration: '50s' }}>
-          {/* Double the array to ensure seamless looping without visual jumps */}
-          {[...servicePills, ...servicePills, ...servicePills].map((pill, index) => {
-            const Icon = pill.icon
-            return (
-              <div
-                key={`row1-${pill.name}-${index}`}
-                className="px-6 py-3 mx-2.5 rounded-full bg-[#1a1a1c] border border-[#333] text-[#c1c1c6] text-sm md:text-base font-semibold whitespace-nowrap flex items-center gap-3 transition-colors hover:bg-[#222] hover:border-[#555] hover:text-[#f5f5f7]"
-              >
-                <Icon className="w-4 h-4 md:w-5 md:h-5 text-[#86868b]" strokeWidth={2} />
-                {pill.name}
-              </div>
-            )
-          })}
-        </div>
+        {isMobile ? (
+          <>
+            <MobileMarqueeRow items={servicePills} direction="left" speed={1.0} />
+            <MobileMarqueeRow items={[...servicePills].reverse()} direction="right" speed={1.0} reverseOffset={true} />
+          </>
+        ) : (
+          <>
+            {/* Row 1: Moving Left */}
+            <div className="flex w-max animate-marquee hover:[animation-play-state:paused] cursor-default" style={{ animationDuration: '50s' }}>
+              {/* Double the array to ensure seamless looping without visual jumps */}
+              {[...servicePills, ...servicePills, ...servicePills].map((pill, index) => {
+                const Icon = pill.icon
+                return (
+                  <div
+                    key={`row1-${pill.name}-${index}`}
+                    className="px-6 py-3 mx-2.5 rounded-full bg-[#1a1a1c] border border-[#333] text-[#c1c1c6] text-sm md:text-base font-semibold whitespace-nowrap flex items-center gap-3 transition-colors hover:bg-[#222] hover:border-[#555] hover:text-[#f5f5f7]"
+                  >
+                    <Icon className="w-4 h-4 md:w-5 md:h-5 text-[#86868b]" strokeWidth={2} />
+                    {pill.name}
+                  </div>
+                )
+              })}
+            </div>
 
-        {/* Row 2: Moving Right */}
-        <div className="flex w-max animate-marquee-reverse hover:[animation-play-state:paused] cursor-default ml-[-50vw]" style={{ animationDuration: '55s' }}>
-          {/* Reverse the pills for variety */}
-          {[...servicePills].reverse().concat([...servicePills].reverse(), [...servicePills].reverse()).map((pill, index) => {
-            const Icon = pill.icon
-            return (
-              <div
-                key={`row2-${pill.name}-${index}`}
-                className="px-6 py-3 mx-2.5 rounded-full bg-[#1a1a1c] border border-[#333] text-[#c1c1c6] text-sm md:text-base font-semibold whitespace-nowrap flex items-center gap-3 transition-colors hover:bg-[#222] hover:border-[#555] hover:text-[#f5f5f7]"
-              >
-                <Icon className="w-4 h-4 md:w-5 md:h-5 text-[#86868b]" strokeWidth={2} />
-                {pill.name}
-              </div>
-            )
-          })}
-        </div>
+            {/* Row 2: Moving Right */}
+            <div className="flex w-max animate-marquee-reverse hover:[animation-play-state:paused] cursor-default ml-[-50vw]" style={{ animationDuration: '55s' }}>
+              {/* Reverse the pills for variety */}
+              {[...servicePills].reverse().concat([...servicePills].reverse(), [...servicePills].reverse()).map((pill, index) => {
+                const Icon = pill.icon
+                return (
+                  <div
+                    key={`row2-${pill.name}-${index}`}
+                    className="px-6 py-3 mx-2.5 rounded-full bg-[#1a1a1c] border border-[#333] text-[#c1c1c6] text-sm md:text-base font-semibold whitespace-nowrap flex items-center gap-3 transition-colors hover:bg-[#222] hover:border-[#555] hover:text-[#f5f5f7]"
+                  >
+                    <Icon className="w-4 h-4 md:w-5 md:h-5 text-[#86868b]" strokeWidth={2} />
+                    {pill.name}
+                  </div>
+                )
+              })}
+            </div>
+          </>
+        )}
       </div>
     </section>
   )

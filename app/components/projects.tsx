@@ -1,8 +1,9 @@
 'use client'
 
 import { useRef, useState, useEffect } from 'react'
-import { motion, useScroll, useTransform, MotionValue, AnimatePresence } from 'framer-motion'
+import { motion, useScroll, useTransform, MotionValue, AnimatePresence, useMotionValue, useAnimationFrame } from 'framer-motion'
 import { profile } from '@/data/profile'
+import { useIsMobile } from '@/lib/useIsMobile'
 
 // Only mounts the active image. Uses a cheap blur-sm fill behind object-contain
 // so there are no black bands and no expensive GPU blur compositing.
@@ -277,7 +278,219 @@ function CtaCard({ projectIndex, totalSteps, progress }: {
   )
 }
 
-export default function Projects() {
+// Simple static stacked list — no pinning, no perspective/3D flip, no
+// scroll-linked background marquee text. Just cards you scroll past normally.
+function ProjectCardStatic({ project, index }: { project: any, index: number }) {
+  const hasLive = project.links?.live && project.links.live !== '#'
+  const hasGithub = project.links?.github && project.links.github !== '#'
+
+  return (
+    <div className="w-full h-full bg-[#121212] rounded-[2rem] border border-[#2a2a2a] shadow-[0_24px_60px_rgba(0,0,0,0.85)] overflow-hidden flex flex-col">
+      <div className="relative w-full aspect-video bg-[#0a0a0a] shrink-0">
+        {project.video ? (
+          <video autoPlay loop muted playsInline className="w-full h-full object-cover">
+            <source src={project.video} type="video/mp4" />
+          </video>
+        ) : project.marqueeImages ? (
+          <MarqueeCarousel images={project.marqueeImages} />
+        ) : project.images && project.images.length > 0 ? (
+          <AutoCarousel images={project.images} />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <h3 className="text-[15vw] font-black text-[#ffffff08] uppercase tracking-tighter leading-none">
+              {project.title.substring(0, 2)}
+            </h3>
+          </div>
+        )}
+      </div>
+
+      <div className="flex flex-col gap-4 p-6 flex-1">
+        <span className="text-[#555] font-medium tracking-widest text-xs uppercase">
+          0{index + 1}
+        </span>
+        <h3 className="text-3xl font-bold text-[#f5f5f7] tracking-tight leading-[1.1]">
+          {project.title.split('—')[0].trim()}
+        </h3>
+        {project.description && (
+          <p className="text-[#86868b] text-sm leading-relaxed">
+            {project.description}
+          </p>
+        )}
+
+        <div className="flex flex-wrap gap-2">
+          {project.tech.slice(0, 5).map((t: string) => (
+            <span key={t} className="px-3 py-1 text-xs font-medium bg-[#1c1c1c] text-[#888] rounded-lg border border-[#2c2c2c]">
+              {t}
+            </span>
+          ))}
+        </div>
+
+        <div className="flex flex-wrap gap-3 mt-auto pt-4">
+          {hasLive && (
+            <a
+              href={project.links.live}
+              target="_blank"
+              rel="noreferrer"
+              className="px-6 py-2.5 bg-[#f5f5f7] text-black font-semibold rounded-full text-sm tracking-tight"
+            >
+              Live Project
+            </a>
+          )}
+          {hasGithub && (
+            <a
+              href={project.links.github}
+              target="_blank"
+              rel="noreferrer"
+              className="px-6 py-2.5 border border-[#444] text-[#f5f5f7] font-semibold rounded-full text-sm tracking-tight"
+            >
+              View Code
+            </a>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function ProjectsCarousel() {
+  const displayProjects = profile.projects.slice(0, 6)
+  // 6 sets to ensure massive buffer for momentum gliding
+  const carouselItems = [...displayProjects, ...displayProjects, ...displayProjects, ...displayProjects, ...displayProjects, ...displayProjects]
+  
+  const x = useMotionValue(0)
+  const trackRef = useRef<HTMLDivElement>(null)
+  
+  const [isHovered, setIsHovered] = useState(false)
+  const isDraggingRef = useRef(false)
+  const isMomentumRef = useRef(false)
+  const [setContentWidth, setSetContentWidth] = useState(0)
+
+  useEffect(() => {
+    const updateWidth = () => {
+      if (trackRef.current) {
+        // The track has 6 sets. One set is 1/6th of the total width.
+        setSetContentWidth(trackRef.current.scrollWidth / 6)
+      }
+    }
+    updateWidth()
+    // Small delay to ensure images/fonts are loaded
+    const timeout = setTimeout(updateWidth, 100)
+    window.addEventListener("resize", updateWidth)
+    return () => {
+      clearTimeout(timeout)
+      window.removeEventListener("resize", updateWidth)
+    }
+  }, [])
+
+  useAnimationFrame((t, delta) => {
+    if (isDraggingRef.current || isHovered) return
+
+    // Let the native momentum spring finish naturally
+    if (isMomentumRef.current) {
+      if (Math.abs(x.getVelocity()) < 10) {
+        isMomentumRef.current = false
+      }
+      return
+    }
+
+    // Normal auto-scroll
+    if (setContentWidth > 0) {
+      let moveBy = 1.0 * (delta / 16)
+      x.set(x.get() - moveBy)
+    }
+  })
+
+  useEffect(() => {
+    return x.on("change", (latest) => {
+      if (setContentWidth > 0) {
+        // EXTREME BOUNDS (Prevent seeing empty space)
+        // If they fling past the massive buffer, hard-wrap immediately.
+        if (latest > 0) {
+          x.set(latest - setContentWidth * 2)
+        } else if (latest <= -setContentWidth * 5) {
+          x.set(latest + setContentWidth * 2)
+        }
+        // SOFT BOUNDS (Invisible wrap)
+        // Only wrap when auto-scrolling (NOT dragging and NOT gliding)
+        // Keeps the position comfortably in the middle buffer (-2W to -3W).
+        else if (!isDraggingRef.current && !isMomentumRef.current) {
+          if (latest > -setContentWidth * 2) {
+            x.set(latest - setContentWidth)
+          } else if (latest <= -setContentWidth * 3) {
+            x.set(latest + setContentWidth)
+          }
+        }
+      }
+    })
+  }, [x, setContentWidth])
+
+  const handleDragStart = () => {
+    isDraggingRef.current = true
+    isMomentumRef.current = false
+  }
+
+  const handleDragEnd = () => {
+    isDraggingRef.current = false
+    isMomentumRef.current = true
+  }
+
+  return (
+    <section
+      id="projects"
+      className="relative z-30 bg-[#000] rounded-t-[3rem] border-t border-[#111] py-24 overflow-hidden"
+    >
+      <h2 className="text-5xl font-bold tracking-tighter text-[#fff] uppercase text-center mb-12 px-4">
+        PROJECTS
+      </h2>
+
+      <div className="relative w-full flex flex-col gap-12 overflow-hidden">
+        {/* Framer Motion Draggable Infinite Carousel */}
+        <div 
+          className="relative w-full overflow-hidden cursor-grab active:cursor-grabbing"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          onTouchStart={() => setIsHovered(true)}
+          onTouchEnd={() => setIsHovered(false)}
+        >
+          <motion.div 
+            ref={trackRef}
+            className="flex w-max"
+            style={{ x }}
+            drag="x"
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
+            dragMomentum={true}
+          >
+            {carouselItems.map((project, i) => (
+              <div key={i} className="w-[85vw] md:w-[450px] shrink-0 px-3 flex items-stretch">
+                <ProjectCardStatic project={project} index={i % displayProjects.length} />
+              </div>
+            ))}
+          </motion.div>
+        </div>
+
+        <div className="w-full px-4">
+          <div className="w-full max-w-[600px] mx-auto bg-[#121212] rounded-[2rem] border border-[#2a2a2a] p-8 text-center flex flex-col items-center gap-4">
+            <h3 className="text-3xl font-bold text-[#f5f5f7] tracking-tight">
+              More to Explore
+            </h3>
+            <p className="text-[#86868b] text-sm max-w-md">
+              Check out the rest of my work spanning AI, full-stack development, AR/VR, and more.
+            </p>
+            <a
+              href="/projects"
+              className="px-7 py-3 bg-[#f5f5f7] text-black font-semibold rounded-full text-sm"
+            >
+              View All Projects
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function ProjectsAnimated() {
   const containerRef = useRef<HTMLDivElement>(null)
 
   const displayProjects = profile.projects.slice(0, 6)
@@ -329,4 +542,9 @@ export default function Projects() {
       </div>
     </section>
   )
+}
+
+export default function Projects() {
+  const isMobile = useIsMobile()
+  return isMobile ? <ProjectsCarousel /> : <ProjectsAnimated />
 }

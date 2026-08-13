@@ -1,8 +1,61 @@
 'use client'
 
-import { useRef } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { useEffect, useRef } from 'react'
+import { motion, useScroll, useTransform, useInView, animate } from 'framer-motion'
 import { profile } from '@/data/profile'
+
+function AnimatedPrefix({ text }: { text: string }) {
+    const ref = useRef<HTMLSpanElement>(null)
+    const isInView = useInView(ref, { once: true, amount: 0.5 })
+    
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    useEffect(() => {
+        if (!isInView || !ref.current) return
+        
+        const match = text.match(/(\d+)(.*)/)
+        if (!match) return
+        
+        const num = parseInt(match[1], 10)
+        const suffix = match[2] || ''
+        
+        const controls = animate(0, num, {
+            duration: 1.5,
+            ease: "easeOut",
+            onUpdate(val) {
+                if (ref.current) {
+                    ref.current.textContent = Math.round(val).toString() + suffix
+                }
+            }
+        })
+        return () => controls.stop()
+    }, [isInView, text])
+    
+    const match = text.match(/(\d+)(.*)/)
+    if (!match) return <span>{text}</span>
+    
+    return <span ref={ref}>0{match[2]}</span>
+}
+
+function StatsGrid() {
+    return (
+        <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-8 mt-32 border-t border-[#333] pt-16">
+            {profile.highlights.map((highlight, index) => (
+                <div
+                    key={index}
+                    className="flex flex-col items-start md:items-center text-left md:text-center"
+                >
+                    <div className="text-[#2997ff] text-2xl md:text-3xl font-bold mb-2">
+                        {highlight.match(/^[\d+%∞]+/) ? highlight.match(/^[\d+%∞]+/)?.[0] : "•"}
+                    </div>
+                    <div className="text-[#86868b] text-sm md:text-base font-medium leading-snug">
+                        {highlight.replace(/^[\d+%∞]+\s*/, '')}
+                    </div>
+                </div>
+            ))}
+        </div>
+    )
+}
+
 
 export default function About() {
     const containerRef = useRef<HTMLDivElement>(null)
@@ -84,7 +137,7 @@ export default function About() {
                             >
                                 <div className="text-[#2997ff] text-2xl md:text-3xl font-bold mb-2">
                                     {/* Extract leading number if present for impact */}
-                                    {highlight.match(/^[\d+%∞]+/) ? highlight.match(/^[\d+%∞]+/)?.[0] : "•"}
+                                    <AnimatedPrefix text={highlight.match(/^[\d+%∞]+/) ? highlight.match(/^[\d+%∞]+/)?.[0] || "•" : "•"} />
                                 </div>
                                 <div className="text-[#86868b] text-sm md:text-base font-medium leading-snug">
                                     {highlight.replace(/^[\d+%∞]+\s*/, '')}
@@ -98,3 +151,4 @@ export default function About() {
         </section>
     )
 }
+

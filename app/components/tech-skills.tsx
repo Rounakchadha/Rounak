@@ -6,17 +6,86 @@ import { profile } from '@/data/profile'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { getLenis } from '@/lib/lenis'
+import { useIsMobile } from '@/lib/useIsMobile'
 
-export default function TechnicalSkills() {
+function getSkillCards() {
+    return Object.entries(profile.skills).map(([category, skills], index) => ({
+        title: category.toUpperCase(),
+        skills: skills.slice(0, 6),
+        id: index,
+    }))
+}
+
+// Plain stacked grid — no GSAP ScrollTrigger pin, no per-frame arc transform
+// math, no scroll-linked marquee text. The desktop version pins the section
+// and manually writes translate3d/opacity to fixed-width 400px cards every
+// scroll tick via querySelectorAll, which is both expensive and doesn't fit
+// mobile viewports anyway.
+function TechnicalSkillsStatic() {
+    const skillCards = getSkillCards()
+
+    return (
+        <section
+            id="skills"
+            className="w-full relative z-30 bg-[#000] rounded-[3rem] border-t border-[#111] overflow-hidden shadow-[0_-20px_50px_rgba(0,0,0,0.8)] px-4 py-24"
+        >
+            <h2 className="text-5xl font-black text-[#fff] tracking-tighter uppercase text-center mb-12">
+                SKILLS
+            </h2>
+
+            <div className="flex flex-col gap-6 max-w-[500px] mx-auto">
+                {skillCards.map((card) => (
+                    <div
+                        key={card.id}
+                        className="bg-gradient-to-br from-[#1a1a1c] to-[#0a0a0c] rounded-[2rem] shadow-[0_20px_40px_rgba(0,0,0,0.6)] border border-[#333] p-8"
+                    >
+                        <h3 className="text-2xl font-black text-[#f5f5f7] mb-6 tracking-wide uppercase border-b border-[#333] pb-4">
+                            {card.title}
+                        </h3>
+                        <div className="space-y-3">
+                            {card.skills.map((skill, i) => (
+                                <div key={i} className="flex items-center text-[#a1a1a6] text-lg font-medium">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-[#555] mr-4" />
+                                    {skill}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </section>
+    )
+}
+
+function TechnicalSkillsAnimated() {
     const containerRef = useRef<HTMLDivElement>(null)
     const textSectionRef = useRef<HTMLDivElement>(null)
     const skillsSectionRef = useRef<HTMLDivElement>(null)
     const [currentIndex, setCurrentIndex] = useState(-1)
     const scrollTriggerRef = useRef<ScrollTrigger | null>(null)
+    const [cardStyle, setCardStyle] = useState({ width: '85vw', maxWidth: '400px', height: '450px' })
+
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth < 768) {
+                setCardStyle({ width: '60vw', maxWidth: '280px', height: '300px' })
+            } else {
+                setCardStyle({ width: '85vw', maxWidth: '400px', height: '450px' })
+            }
+        }
+        handleResize()
+        window.addEventListener('resize', handleResize)
+        return () => window.removeEventListener('resize', handleResize)
+    }, [])
 
     // Register GSAP ScrollTrigger (conditionally loaded in browser)
     useEffect(() => {
         gsap.registerPlugin(ScrollTrigger)
+        // GSAP's own default behavior also treats the mobile address-bar
+        // show/hide as a resize and auto-refreshes all triggers on it, which
+        // is the standard cause of pinned sections "jumping"/glitching
+        // mid-scroll on phones. This is the officially recommended guard.
+        ScrollTrigger.config({ ignoreMobileResize: true })
     }, [])
 
     // marquee text
@@ -32,6 +101,13 @@ export default function TechnicalSkills() {
     useEffect(() => {
         const el = textSectionRef.current
         if (!el) return
+
+        // This whole block is `hidden md:block` (desktop-only) — on mobile the
+        // element is display:none, so attaching a scroll listener here just
+        // burns a synchronous getBoundingClientRect() read on every scroll
+        // event for an invisible, zero-size element. No visual difference
+        // either way; this only removes wasted work during mobile scrolling.
+        if (window.matchMedia('(max-width: 767px)').matches) return
 
         const compute = () => {
             const rect = el.getBoundingClientRect()
@@ -62,14 +138,10 @@ export default function TechnicalSkills() {
         }
     }, [textProgress])
 
-    const textX = useTransform(textProgress, [0, 1], [200, -1200])
-    const textX2 = useTransform(textProgress, [0, 1], [-1200, 200])
+    const textX = useTransform(textProgress, [0, 1], ["5%", "-50%"])
+    const textX2 = useTransform(textProgress, [0, 1], ["-50%", "5%"])
 
-    const skillCards = Object.entries(profile.skills).map(([category, skills], index) => ({
-        title: category.toUpperCase(),
-        skills: skills.slice(0, 6),
-        id: index,
-    }))
+    const skillCards = getSkillCards()
     const N = skillCards.length
 
     useEffect(() => {
@@ -80,8 +152,17 @@ export default function TechnicalSkills() {
         scrollTriggerRef.current = null
 
         const ctx = gsap.context(() => {
+            // Cache every card element once — onUpdate fires on essentially
+            // every scroll tick while pinned, so re-running querySelector for
+            // each of the N cards on every single tick (as this used to do)
+            // is pure repeated DOM-query overhead with no visual difference.
+            const cardEls: (HTMLElement | null)[] = []
+            for (let i = 0; i < N; i++) {
+                cardEls.push(document.querySelector(`.skill-card-${i}`) as HTMLElement | null)
+            }
+
             // Measure to keep logic responsive
-            const firstEl = document.querySelector('.skill-card-0') as HTMLElement | null
+            const firstEl = cardEls[0]
             const cardW = firstEl ? firstEl.offsetWidth : 400
             const gap = Math.max(140, Math.min(220, Math.floor(window.innerWidth * 0.12))) // spacing between cards
             const stepX = Math.round(cardW + gap) // distance between neighboring card centers
@@ -98,11 +179,14 @@ export default function TechnicalSkills() {
             const startRaw = -1 - lead
             const endRaw = (N - 1) + tail
             const span = endRaw - startRaw // = N + lead + tail
-            const totalScrollPx = Math.round(span * stepX)
+
+            const isMobile = window.innerWidth < 768
+            // Increase pinning distance slightly (0.65) to slow down the arc animation and prevent jumping/glitching on fast swipes
+            const totalScrollPx = Math.round(span * stepX * (isMobile ? 0.65 : 1))
 
             // init: place all cards off to the right & invisible
             for (let i = 0; i < N; i++) {
-                const el = document.querySelector(`.skill-card-${i}`) as HTMLElement | null
+                const el = cardEls[i]
                 if (el) {
                     el.style.transform = `translate3d(${offX}px, 0, 0)`
                     el.style.opacity = '0'
@@ -127,7 +211,7 @@ export default function TechnicalSkills() {
                     setCurrentIndex(raw < 0 ? -1 : a)
 
                     for (let index = 0; index < N; index++) {
-                        const el = document.querySelector(`.skill-card-${index}`) as HTMLElement | null
+                        const el = cardEls[index]
                         if (!el) continue
 
                         const offset = index - raw
@@ -156,7 +240,17 @@ export default function TechnicalSkills() {
             })
         }, skillsSectionRef)
 
-        const onResize = () => ScrollTrigger.refresh()
+        // Mobile browsers fire `resize` when the address bar shows/hides during
+        // a scroll gesture (window.innerHeight changes, width doesn't). Calling
+        // ScrollTrigger.refresh() there recalculates the pin's start/end mid-
+        // swipe, which is what reads as the animation "stopping"/glitching —
+        // only refresh on an actual width change (rotation/real resize).
+        let lastWidth = window.innerWidth
+        const onResize = () => {
+            if (window.innerWidth === lastWidth) return
+            lastWidth = window.innerWidth
+            ScrollTrigger.refresh()
+        }
         window.addEventListener('resize', onResize)
 
         return () => {
@@ -173,23 +267,27 @@ export default function TechnicalSkills() {
     return (
         <>
             <section
-                id="technical-skills"
+                id="skills"
                 className="w-full relative z-30 bg-[#000] rounded-[3rem] border-t border-[#111] overflow-hidden shadow-[0_-20px_50px_rgba(0,0,0,0.8)]"
             >
-                {/* Moving Text Section immediately above the pinned skills */}
-                <div ref={textSectionRef} className="py-24 bg-black overflow-hidden border-b border-[#222]">
+                {/* Moving Text Section immediately above the pinned skills - hidden on mobile to prevent transition glitches */}
+                <div ref={textSectionRef} className="hidden md:block py-24 bg-black overflow-hidden border-b border-[#222]">
                     <div className="relative">
                         <motion.div
                             style={{ x: textX }}
-                            className="flex whitespace-nowrap text-[18vw] font-black text-white leading-none select-none tracking-tighter"
+                            className="flex w-max whitespace-nowrap text-[18vw] font-black text-white leading-none select-none tracking-tighter"
                         >
-                            <span>DEVELOPER • ENGINEER • CREATOR • </span>
+                            {[...Array(4)].map((_, i) => (
+                                <span key={i} className="pr-8">DEVELOPER • ENGINEER • CREATOR • </span>
+                            ))}
                         </motion.div>
                         <motion.div
                             style={{ x: textX2 }}
-                            className="flex whitespace-nowrap text-[18vw] font-black text-[#555] leading-none select-none tracking-tighter mt-4"
+                            className="flex w-max whitespace-nowrap text-[18vw] font-black text-[#555] leading-none select-none tracking-tighter mt-4"
                         >
-                            <span>FULL-STACK • FRONTEND • BACKEND • </span>
+                            {[...Array(4)].map((_, i) => (
+                                <span key={i} className="pr-8">FULL-STACK • FRONTEND • BACKEND • </span>
+                            ))}
                         </motion.div>
                     </div>
                 </div>
@@ -213,21 +311,21 @@ export default function TechnicalSkills() {
                                 {skillCards.map((card, index) => (
                                     <div
                                         key={card.id}
-                                        className={`skill-card-${index} gfx-card absolute bg-gradient-to-br from-[#1a1a1c] to-[#0a0a0c] rounded-[2rem] shadow-[0_20px_40px_rgba(0,0,0,0.6)] border border-[#333] p-10 overflow-hidden group hover:border-[#555] transition-colors duration-500`}
-                                        style={{ width: '400px', height: '450px', zIndex: 20 }}
+                                        className={`skill-card-${index} gfx-card absolute bg-gradient-to-br from-[#1a1a1c] to-[#0a0a0c] rounded-[2rem] shadow-[0_20px_40px_rgba(0,0,0,0.6)] border border-[#333] p-5 md:p-10 overflow-hidden group hover:border-[#555] transition-colors duration-500`}
+                                        style={{ ...cardStyle, zIndex: 20 }}
                                     >
                                         {/* Subtle top glow effect */}
                                         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[80%] h-px bg-gradient-to-r from-transparent via-[#555] to-transparent opacity-50" />
 
                                         <div className="h-full flex flex-col justify-start relative z-10">
-                                            <h3 className="text-3xl font-black text-[#f5f5f7] mb-8 tracking-wide uppercase border-b border-[#333] pb-6 flex items-center justify-between">
+                                            <h3 className="text-xl md:text-3xl font-black text-[#f5f5f7] mb-3 md:mb-8 tracking-wide uppercase border-b border-[#333] pb-3 md:pb-6 flex items-center justify-between">
                                                 {card.title}
-                                                <span className="text-[#333] text-4xl leading-none">.</span>
+                                                <span className="text-[#333] text-2xl md:text-4xl leading-none">.</span>
                                             </h3>
-                                            <div className="space-y-4 flex-grow">
+                                            <div className="space-y-1.5 md:space-y-4 flex-grow">
                                                 {card.skills.map((skill, i) => (
-                                                    <div key={i} className="flex items-center text-[#a1a1a6] text-xl font-medium group-hover:text-[#d1d1d6] transition-colors duration-300">
-                                                        <span className="w-1.5 h-1.5 rounded-full bg-[#333] mr-4 group-hover:bg-[#555] transition-colors duration-300" />
+                                                    <div key={i} className="flex items-center text-[#a1a1a6] text-[15px] md:text-xl font-medium group-hover:text-[#d1d1d6] transition-colors duration-300">
+                                                        <span className="w-1 h-1 md:w-1.5 md:h-1.5 rounded-full bg-[#333] mr-3 md:mr-4 group-hover:bg-[#555] transition-colors duration-300" />
                                                         {skill}
                                                     </div>
                                                 ))}
@@ -261,4 +359,8 @@ export default function TechnicalSkills() {
       `}</style>
         </>
     )
+}
+
+export default function TechnicalSkills() {
+    return <TechnicalSkillsAnimated />
 }

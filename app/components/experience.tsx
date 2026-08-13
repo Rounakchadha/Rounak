@@ -3,6 +3,7 @@
 import { useRef } from 'react'
 import { motion, useScroll, useTransform, MotionValue } from 'framer-motion'
 import { profile } from '@/data/profile'
+import { useIsMobile } from '@/lib/useIsMobile'
 
 function ExperienceCard({ exp, index, totalCards, progress }: { exp: any, index: number, totalCards: number, progress: MotionValue<number> }) {
   // We want cards to stick to the top. As subsequent cards scroll up, the current card scales down slightly and darkens.
@@ -81,6 +82,7 @@ function ExperienceCard({ exp, index, totalCards, progress }: { exp: any, index:
 
 export default function Experience() {
   const containerRef = useRef<HTMLDivElement>(null)
+  const isMobile = useIsMobile()
 
   // Track scroll over the entire container which is N * 100vh tall
   const { scrollYProgress } = useScroll({
@@ -88,8 +90,10 @@ export default function Experience() {
     offset: ["start start", "end end"]
   })
 
-  // Start the heading from behind the cards (~40vh down) and move it up to top (~5vh) as the first card scrolls
-  const headingY = useTransform(scrollYProgress, [0, 0.2], ["40vh", "5vh"])
+  // Start the heading from behind the cards (~40vh down) and move it up to top (~12vh on mobile, ~5vh on desktop) as the first card scrolls
+  const headingYDesktop = useTransform(scrollYProgress, [0, 0.2], ["40vh", "5vh"])
+  const headingYMobile = useTransform(scrollYProgress, [0, 0.2], ["40vh", "12vh"])
+  const headingY = isMobile ? headingYMobile : headingYDesktop
 
   return (
     <section
@@ -135,3 +139,4 @@ export default function Experience() {
     </section>
   )
 }
+

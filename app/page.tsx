@@ -14,7 +14,7 @@ export default function Home() {
   return (
     <SmoothScroll>
       <div className="relative w-full bg-black min-h-screen">
-        <div className="absolute top-0 left-0 w-full z-0 h-screen">
+        <div className="fixed top-0 left-0 w-full z-0 h-screen">
           <Hero />
         </div>
 

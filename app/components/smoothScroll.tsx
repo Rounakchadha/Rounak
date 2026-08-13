@@ -7,6 +7,10 @@ import { scrollToSection } from '@/lib/scrollToSection'
 
 export default function SmoothScroll({ children }: { children: ReactNode }) {
   useEffect(() => {
+    // Checked synchronously (not via the useIsMobile hook) so Lenis never
+    // briefly spins up on mobile before a re-render turns it back off.
+    const isMobile = window.matchMedia('(max-width: 767px)').matches
+
     // Only force-reset to the top when there's no #section in the URL —
     // otherwise this used to unconditionally run and stomp on the browser's
     // native scroll-to-hash whenever a nav link routed in from another page
@@ -15,6 +19,16 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
     const hash = window.location.hash.slice(1)
     if (!hash) {
       window.scrollTo(0, 0)
+    }
+
+    // On mobile, skip Lenis entirely and let the browser handle native
+    // touch scrolling — Lenis's rAF-driven scroll fights with iOS/Android
+    // momentum scroll and is a major source of jank on touch devices.
+    if (isMobile) {
+      if (hash) {
+        requestAnimationFrame(() => scrollToSection(hash))
+      }
+      return
     }
 
     const lenis = new Lenis({
