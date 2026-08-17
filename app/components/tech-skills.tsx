@@ -200,6 +200,7 @@ function TechnicalSkillsAnimated() {
                 start: 'top top',
                 end: `+=${totalScrollPx}`, // stays pinned through lead + cards + tail
                 pin: true,
+                anticipatePin: 1, // Fixes mobile momentum scroll jumping past the pin
                 scrub: 1,
                 invalidateOnRefresh: true,
                 onUpdate: (self) => {
