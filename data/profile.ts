@@ -15,6 +15,11 @@ export const profile = {
   },
   
   summary: "Hands on experience in full stack web and software development, delivering user centric solutions across fintech, AR/VR, and analytics. Developed and deployed 5+ real-world applications, including dashboards, chatbots, and interactive tools. Skilled in applying advanced algorithms, data structures, and product thinking to create scalable, high performance systems that drive measurable user engagement.",
+
+  // Short, ~155-char version for <meta name="description"> and social
+  // previews — Google truncates anywhere near ~160 chars, and `summary`
+  // above is written for the About section, not a search snippet.
+  metaDescription: "Rounak Chadha — Full-Stack Developer building AI-powered apps, dashboards & chatbots with React and Next.js. 10+ projects across fintech, healthcare & AR/VR.",
   
   highlights: [
     "10+ Real-World Applications Deployed",
@@ -74,9 +79,9 @@ export const profile = {
       impact: "Reduced customer wait times by 60% and improved issue resolution rate.",
       tech: ["Node.js", "TypeScript", "Twilio", "Groq", "n8n", "Prisma"],
       images: [
-        "/projects/ivr-voice-chat/ivr-voice-chat-1.png",
-        "/projects/ivr-voice-chat/ivr-voice-chat-2.png",
-        "/projects/ivr-voice-chat/ivr-voice-chat-3.png"
+        "/projects/ivr-voice-chat/ivr-voice-chat-1.jpg",
+        "/projects/ivr-voice-chat/ivr-voice-chat-2.jpg",
+        "/projects/ivr-voice-chat/ivr-voice-chat-3.jpg"
       ],
       links: { github: "https://github.com/Rounakchadha/Finfinity-AI-agent-IVR", live: "https://finfinity-ai-agent-ivr.onrender.com" },
     },
@@ -86,14 +91,14 @@ export const profile = {
       impact: "Provides deep insights into user journeys, increasing conversion rates.",
       tech: ["React", "Node.js", "PostgreSQL", "Redis"],
       images: [
-        "/projects/engageiq/engageiq-1.png",
-        "/projects/engageiq/engageiq-2.png",
-        "/projects/engageiq/engageiq-3.png",
-        "/projects/engageiq/engageiq-4.png",
-        "/projects/engageiq/engageiq-5.png",
-        "/projects/engageiq/engageiq-6.png",
-        "/projects/engageiq/engageiq-7.png",
-        "/projects/engageiq/engageiq-8.png"
+        "/projects/engageiq/engageiq-1.jpg",
+        "/projects/engageiq/engageiq-2.jpg",
+        "/projects/engageiq/engageiq-3.jpg",
+        "/projects/engageiq/engageiq-4.jpg",
+        "/projects/engageiq/engageiq-5.jpg",
+        "/projects/engageiq/engageiq-6.jpg",
+        "/projects/engageiq/engageiq-7.jpg",
+        "/projects/engageiq/engageiq-8.jpg"
       ],
       links: { github: "#", live: "#" },
     },
@@ -123,10 +128,10 @@ export const profile = {
       impact: "Streamlined internal communications and centralized documentation.",
       tech: ["Next.js", "Node.js", "MongoDB"],
       images: [
-        "/projects/finfinity-intranet/finfinity-intranet-1.png",
-        "/projects/finfinity-intranet/finfinity-intranet-2.png",
-        "/projects/finfinity-intranet/finfinity-intranet-3.png",
-        "/projects/finfinity-intranet/finfinity-intranet-4.png"
+        "/projects/finfinity-intranet/finfinity-intranet-1.jpg",
+        "/projects/finfinity-intranet/finfinity-intranet-2.jpg",
+        "/projects/finfinity-intranet/finfinity-intranet-3.jpg",
+        "/projects/finfinity-intranet/finfinity-intranet-4.jpg"
       ],
       links: { github: "#", live: "#" },
     },
@@ -136,9 +141,9 @@ export const profile = {
       impact: "Streamlines audio editing tasks using natural language processing.",
       tech: ["React", "Python", "OpenAI API", "Audio Processing"],
       images: [
-        "/projects/ai-audio-editor/ai-audio-editor-1.png",
-        "/projects/ai-audio-editor/ai-audio-editor-2.png",
-        "/projects/ai-audio-editor/ai-audio-editor-3.png"
+        "/projects/ai-audio-editor/ai-audio-editor-1.jpg",
+        "/projects/ai-audio-editor/ai-audio-editor-2.jpg",
+        "/projects/ai-audio-editor/ai-audio-editor-3.jpg"
       ],
       links: { github: "#", live: "#" },
     },
@@ -149,11 +154,11 @@ export const profile = {
       impact: "Optimized backend for sub‑second responses, reducing search effort by 50%.",
       tech: ["FastAPI", "Supabase", "pgvector", "React", "LLM", "RAG"],
       images: [
-        "/projects/propbot-ai/propbot-ai-1.png",
-        "/projects/propbot-ai/propbot-ai-2.png",
-        "/projects/propbot-ai/propbot-ai-3.png",
-        "/projects/propbot-ai/propbot-ai-4.png",
-        "/projects/propbot-ai/propbot-ai-5.png"
+        "/projects/propbot-ai/propbot-ai-1.jpg",
+        "/projects/propbot-ai/propbot-ai-2.jpg",
+        "/projects/propbot-ai/propbot-ai-3.jpg",
+        "/projects/propbot-ai/propbot-ai-4.jpg",
+        "/projects/propbot-ai/propbot-ai-5.jpg"
       ],
       links: { github: "#", live: "#" },
     },
@@ -163,10 +168,10 @@ export const profile = {
       impact: "Optimized queries reaching sub‑second lookups, improving decision speed by ~40%.",
       tech: ["React", "Node.js", "FastAPI", "PostgreSQL", "WebSockets"],
       images: [
-        "/projects/insight-crm/insight-crm-1.png",
-        "/projects/insight-crm/insight-crm-2.png",
-        "/projects/insight-crm/insight-crm-3.png",
-        "/projects/insight-crm/insight-crm-4.png"
+        "/projects/insight-crm/insight-crm-1.jpg",
+        "/projects/insight-crm/insight-crm-2.jpg",
+        "/projects/insight-crm/insight-crm-3.jpg",
+        "/projects/insight-crm/insight-crm-4.jpg"
       ],
       links: { github: "#", live: "#" },
     },
@@ -184,12 +189,12 @@ export const profile = {
       impact: "Achieved 40% increase in user engagement through intuitive UX design.",
       tech: ["React", "AI Chatbot", "API Integration"],
       images: [
-        "/projects/cervicare/cervicare-1.png",
-        "/projects/cervicare/cervicare-2.png",
-        "/projects/cervicare/cervicare-3.png",
-        "/projects/cervicare/cervicare-4.png",
-        "/projects/cervicare/cervicare-5.png",
-        "/projects/cervicare/cervicare-6.png"
+        "/projects/cervicare/cervicare-1.jpg",
+        "/projects/cervicare/cervicare-2.jpg",
+        "/projects/cervicare/cervicare-3.jpg",
+        "/projects/cervicare/cervicare-4.jpg",
+        "/projects/cervicare/cervicare-5.jpg",
+        "/projects/cervicare/cervicare-6.jpg"
       ],
       links: { github: "#", live: "#" },
     },
@@ -199,13 +204,13 @@ export const profile = {
       impact: "Achieved 93% detection accuracy with 45% reduction in processing time.",
       tech: ["Python", "CNN", "Vision Transformers"],
       images: [
-        "/projects/deepfake/deepfake-1.png",
-        "/projects/deepfake/deepfake-2.png",
-        "/projects/deepfake/deepfake-3.png",
-        "/projects/deepfake/deepfake-4.png",
-        "/projects/deepfake/deepfake-5.png"
+        "/projects/deepfake/deepfake-1.jpg",
+        "/projects/deepfake/deepfake-2.jpg",
+        "/projects/deepfake/deepfake-3.jpg",
+        "/projects/deepfake/deepfake-4.jpg",
+        "/projects/deepfake/deepfake-5.jpg"
       ],
-      links: { github: "#", live: "https://projects/deepfake/deepfake-detection-azure.vercel.app/detect" },
+      links: { github: "#", live: "https://deepfake-detection-azure.vercel.app/detect" },
     },
     {
       title: "FinTech Calculators",
@@ -213,10 +218,10 @@ export const profile = {
       impact: "Empowered users with quick and accurate financial projections.",
       tech: ["React", "TypeScript", "Tailwind CSS"],
       images: [
-        "/projects/finfinity-calculators/finfinity-calculators-1.png",
-        "/projects/finfinity-calculators/finfinity-calculators-2.png",
-        "/projects/finfinity-calculators/finfinity-calculators-3.png",
-        "/projects/finfinity-calculators/finfinity-calculators-4.png"
+        "/projects/finfinity-calculators/finfinity-calculators-1.jpg",
+        "/projects/finfinity-calculators/finfinity-calculators-2.jpg",
+        "/projects/finfinity-calculators/finfinity-calculators-3.jpg",
+        "/projects/finfinity-calculators/finfinity-calculators-4.jpg"
       ],
       links: { github: "#", live: "#" },
     },
@@ -243,13 +248,13 @@ export const profile = {
       impact: "Automated underwriting rules and risk assessment.",
       tech: ["Python", "FastAPI", "React", "Next.js"],
       images: [
-        "/projects/finfinity-scorecard/finfinity-scorecard-1.png",
-        "/projects/finfinity-scorecard/finfinity-scorecard-2.png",
-        "/projects/finfinity-scorecard/finfinity-scorecard-3.png",
-        "/projects/finfinity-scorecard/finfinity-scorecard-4.png",
-        "/projects/finfinity-scorecard/finfinity-scorecard-5.png",
-        "/projects/finfinity-scorecard/finfinity-scorecard-6.png",
-        "/projects/finfinity-scorecard/finfinity-scorecard-7.png"
+        "/projects/finfinity-scorecard/finfinity-scorecard-1.jpg",
+        "/projects/finfinity-scorecard/finfinity-scorecard-2.jpg",
+        "/projects/finfinity-scorecard/finfinity-scorecard-3.jpg",
+        "/projects/finfinity-scorecard/finfinity-scorecard-4.jpg",
+        "/projects/finfinity-scorecard/finfinity-scorecard-5.jpg",
+        "/projects/finfinity-scorecard/finfinity-scorecard-6.jpg",
+        "/projects/finfinity-scorecard/finfinity-scorecard-7.jpg"
       ],
       links: { github: "#", live: "#" },
     },
@@ -259,9 +264,9 @@ export const profile = {
       impact: "Provides private, cost-effective LLM access for everyday productivity.",
       tech: ["Ollama", "React", "Node.js"],
       images: [
-        "/projects/ollama-wrapper/ollama-wrapper-1.png",
-        "/projects/ollama-wrapper/ollama-wrapper-2.png",
-        "/projects/ollama-wrapper/ollama-wrapper-3.png"
+        "/projects/ollama-wrapper/ollama-wrapper-1.jpg",
+        "/projects/ollama-wrapper/ollama-wrapper-2.jpg",
+        "/projects/ollama-wrapper/ollama-wrapper-3.jpg"
       ],
       links: { github: "#", live: "#" },
     }

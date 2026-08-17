@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     default: title,
     template: `%s | ${profile.name}`,
   },
-  description: profile.summary,
+  description: profile.metaDescription,
   keywords,
   authors: [{ name: profile.name, url: profile.siteUrl }],
   creator: profile.name,
@@ -72,17 +72,16 @@ export const metadata: Metadata = {
     url: profile.siteUrl,
     siteName: `${profile.name} Portfolio`,
     title,
-    description: profile.summary,
+    description: profile.metaDescription,
     // app/opengraph-image.tsx is auto-detected by Next.js and wired in here
   },
   twitter: {
     card: 'summary_large_image',
     title,
-    description: profile.summary,
+    description: profile.metaDescription,
   },
-  icons: {
-    icon: '/favicon.ico',
-  },
+  // icon.tsx/apple-icon.tsx are auto-detected by Next.js; favicon.ico stays
+  // in public/ as a fallback for old browsers that only ever look there.
   verification: {
     // Paste the content value from Google Search Console's HTML tag
     // verification method here once the domain is set up, e.g.:
