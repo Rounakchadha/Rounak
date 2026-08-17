@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef, useState, useEffect } from 'react'
-import { motion, useScroll, useTransform, MotionValue, AnimatePresence, useMotionValue, useAnimationFrame } from 'framer-motion'
+import { motion, useScroll, useTransform, MotionValue, AnimatePresence, useMotionValue, useAnimationFrame, useMotionValueEvent } from 'framer-motion'
 import { profile } from '@/data/profile'
 import { useIsMobile } from '@/lib/useIsMobile'
 
@@ -143,6 +143,20 @@ function ProjectCard({ project, projectIndex, totalSteps, progress }: {
     v >= cardStraight && v <= cardFlip ? 'auto' : 'none'
   )
 
+  // All 6 cards are always mounted (that's what makes the flip transform
+  // work), but they don't all need to be loading video/images at once —
+  // that was 2 autoplaying videos + 3 image carousels + a 6-image marquee
+  // all fighting for bandwidth the instant the page loads, which is why
+  // some images would time out or briefly show broken while queued behind
+  // video downloads. Only mount media for the card that's actually active
+  // or about to be, with a one-step buffer so the next card preloads
+  // slightly ahead of when it flips into view.
+  const buffer = seg
+  const [isNearActive, setIsNearActive] = useState(projectIndex === 0)
+  useMotionValueEvent(progress, 'change', (latest) => {
+    setIsNearActive(latest >= cardAppear - buffer && latest <= cardFlip + buffer)
+  })
+
   const hasLive   = project.links?.live   && project.links.live   !== '#'
   const hasGithub = project.links?.github && project.links.github !== '#'
 
@@ -204,7 +218,7 @@ function ProjectCard({ project, projectIndex, totalSteps, progress }: {
         {/* Vertical separator gradient */}
         <div className="absolute left-0 inset-y-0 w-16 bg-gradient-to-r from-[#121212] to-transparent z-10 pointer-events-none" />
         <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 aspect-video rounded-[1.2rem] overflow-hidden border border-[#222] bg-[#0a0a0a]">
-          {project.video ? (
+          {!isNearActive ? null : project.video ? (
             <video autoPlay loop muted playsInline className="w-full h-full object-cover">
               <source src={project.video} type="video/mp4" />
             </video>
@@ -284,10 +298,28 @@ function ProjectCardStatic({ project, index }: { project: any, index: number }) 
   const hasLive = project.links?.live && project.links.live !== '#'
   const hasGithub = project.links?.github && project.links.github !== '#'
 
+  // The mobile carousel duplicates every card 6x for the infinite-drag
+  // illusion, so up to 36 of these can exist in the DOM at once. Without
+  // this, that's dozens of autoplaying videos and image carousels all
+  // loading simultaneously regardless of whether they're ever scrolled to —
+  // only mount media once this specific card is actually near the viewport.
+  const mediaRef = useRef<HTMLDivElement>(null)
+  const [isNearViewport, setIsNearViewport] = useState(false)
+  useEffect(() => {
+    const el = mediaRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsNearViewport(entry.isIntersecting),
+      { rootMargin: '400px' }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
   return (
     <div className="w-full h-full bg-[#121212] rounded-[2rem] border border-[#2a2a2a] shadow-[0_24px_60px_rgba(0,0,0,0.85)] overflow-hidden flex flex-col">
-      <div className="relative w-full aspect-video bg-[#0a0a0a] shrink-0">
-        {project.video ? (
+      <div ref={mediaRef} className="relative w-full aspect-video bg-[#0a0a0a] shrink-0">
+        {!isNearViewport ? null : project.video ? (
           <video autoPlay loop muted playsInline className="w-full h-full object-cover">
             <source src={project.video} type="video/mp4" />
           </video>
