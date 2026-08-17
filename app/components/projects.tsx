@@ -7,7 +7,7 @@ import { useIsMobile } from '@/lib/useIsMobile'
 
 // Only mounts the active image. Uses a cheap blur-sm fill behind object-contain
 // so there are no black bands and no expensive GPU blur compositing.
-function AutoCarousel({ images }: { images: string[] }) {
+function AutoCarousel({ images, title }: { images: string[]; title: string }) {
   const [index, setIndex] = useState(0)
 
   useEffect(() => {
@@ -34,9 +34,9 @@ function AutoCarousel({ images }: { images: string[] }) {
           className="absolute inset-0"
         >
           {/* Blurred fill — blur-sm is ~10x cheaper than blur-2xl */}
-          <img src={src} className="absolute inset-0 w-full h-full object-cover blur-sm opacity-25 scale-110" aria-hidden />
+          <img src={src} className="absolute inset-0 w-full h-full object-cover blur-sm opacity-25 scale-110" alt="" aria-hidden />
           {/* Sharp foreground — contained so nothing is cropped */}
-          <img src={src} className="absolute inset-0 w-full h-full object-contain" />
+          <img src={src} className="absolute inset-0 w-full h-full object-contain" alt={`${title} screenshot ${index + 1}`} />
         </motion.div>
       </AnimatePresence>
     </div>
@@ -211,7 +211,7 @@ function ProjectCard({ project, projectIndex, totalSteps, progress }: {
           ) : project.marqueeImages ? (
             <MarqueeCarousel images={project.marqueeImages} />
           ) : project.images && project.images.length > 0 ? (
-            <AutoCarousel images={project.images} />
+            <AutoCarousel images={project.images} title={project.title.split('—')[0].trim()} />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center">
               <h3 className="text-[15vw] md:text-[10vw] font-black text-[#ffffff05] uppercase tracking-tighter leading-none">
@@ -294,7 +294,7 @@ function ProjectCardStatic({ project, index }: { project: any, index: number }) 
         ) : project.marqueeImages ? (
           <MarqueeCarousel images={project.marqueeImages} />
         ) : project.images && project.images.length > 0 ? (
-          <AutoCarousel images={project.images} />
+          <AutoCarousel images={project.images} title={project.title.split('—')[0].trim()} />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center">
             <h3 className="text-[15vw] font-black text-[#ffffff08] uppercase tracking-tighter leading-none">

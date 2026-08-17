@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import Link from 'next/link'
 import { profile } from '@/data/profile'
+import { slugifyProjectTitle } from '@/lib/slug'
 
-function AutoCarousel({ images }: { images: string[] }) {
+function AutoCarousel({ images, title }: { images: string[]; title: string }) {
   const [index, setIndex] = useState(0)
 
   useEffect(() => {
@@ -23,6 +25,7 @@ function AutoCarousel({ images }: { images: string[] }) {
         <motion.img
           key={images[index]}
           src={images[index]}
+          alt={`${title} screenshot ${index + 1}`}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -162,24 +165,37 @@ const ProjectRow = ({ project, index }: { project: any, index: number }) => {
 
               {/* Masking Effect Buttons */}
               <div className="flex flex-wrap gap-4 mt-8">
-                {project.links?.live && (
+                <Link
+                  href={`/project/${slugifyProjectTitle(project.title)}`}
+                  className="group/btn relative inline-flex items-center justify-center overflow-hidden rounded-full border border-[#f5f5f7] bg-[#f5f5f7] px-8 py-3 text-sm font-semibold transition-all duration-500 hover:bg-black hover:border-[#333]"
+                >
+                  <div className="relative flex overflow-hidden">
+                    <span className="inline-block text-black transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/btn:-translate-y-[150%]">
+                      CASE STUDY
+                    </span>
+                    <span className="absolute left-0 top-0 inline-block translate-y-[150%] text-[#f5f5f7] transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/btn:translate-y-0">
+                      CASE STUDY
+                    </span>
+                  </div>
+                </Link>
+                {project.links?.live && project.links.live !== '#' && (
                   <a
                     href={project.links.live}
                     target="_blank"
                     rel="noreferrer"
-                    className="group/btn relative inline-flex items-center justify-center overflow-hidden rounded-full border border-[#f5f5f7] bg-[#f5f5f7] px-8 py-3 text-sm font-semibold transition-all duration-500 hover:bg-black hover:border-[#333]"
+                    className="group/btn relative inline-flex items-center justify-center overflow-hidden rounded-full border border-[#333] bg-transparent px-8 py-3 text-sm font-semibold transition-all duration-500 hover:bg-[#1a1a1a]"
                   >
                     <div className="relative flex overflow-hidden">
-                      <span className="inline-block text-black transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/btn:-translate-y-[150%]">
+                      <span className="inline-block text-[#f5f5f7] transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/btn:-translate-y-[150%]">
                         VIEW LIVE SITE
                       </span>
-                      <span className="absolute left-0 top-0 inline-block translate-y-[150%] text-[#f5f5f7] transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/btn:translate-y-0">
+                      <span className="absolute left-0 top-0 inline-block translate-y-[150%] text-white transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/btn:translate-y-0">
                         VIEW LIVE SITE
                       </span>
                     </div>
                   </a>
                 )}
-                {project.links?.github && (
+                {project.links?.github && project.links.github !== '#' && (
                   <a
                     href={project.links.github}
                     target="_blank"
@@ -224,7 +240,7 @@ const ProjectRow = ({ project, index }: { project: any, index: number }) => {
                 </div>
               ) : project.images && project.images.length > 0 ? (
                 <div className="absolute inset-0 opacity-80 group-hover/placard:opacity-100 group-hover/placard:scale-105 transition-all duration-700">
-                  <AutoCarousel images={project.images} />
+                  <AutoCarousel images={project.images} title={project.title.split('—')[0].trim()} />
                 </div>
               ) : (
                 <div className="absolute inset-0 flex items-center justify-center">

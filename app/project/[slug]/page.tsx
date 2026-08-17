@@ -1,34 +1,91 @@
 import { profile } from '@/data/profile'
+import { slugifyProjectTitle } from '@/lib/slug'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import type { Metadata } from 'next'
 
 export async function generateStaticParams() {
     return profile.projects.map((project) => ({
-        slug: project.title.split('—')[0].trim().toLowerCase().replace(/[^a-z0-9]+/g, '-')
+        slug: slugifyProjectTitle(project.title),
     }))
+}
+
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+    const project = profile.projects.find(
+        (p) => slugifyProjectTitle(p.title) === params.slug
+    )
+
+    if (!project) {
+        return { title: 'Project Not Found' }
+    }
+
+    const name = project.title.split('—')[0].trim()
+    const title = `${name} — Case Study`
+    const description = project.description
+
+    return {
+        title,
+        description,
+        alternates: {
+            canonical: `/project/${params.slug}`,
+        },
+        openGraph: {
+            title: `${name} | ${profile.name}`,
+            description,
+            type: 'article',
+            url: `${profile.siteUrl}/project/${params.slug}`,
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: `${name} | ${profile.name}`,
+            description,
+        },
+    }
 }
 
 export default function ProjectDetail({ params }: { params: { slug: string } }) {
     const project = profile.projects.find(
-        p => p.title.split('—')[0].trim().toLowerCase().replace(/[^a-z0-9]+/g, '-') === params.slug
+        p => slugifyProjectTitle(p.title) === params.slug
     )
 
     if (!project) {
         notFound()
     }
 
+    const name = project.title.split('—')[0].trim()
+
+    const jsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'CreativeWork',
+        name,
+        description: project.description,
+        creator: {
+            '@type': 'Person',
+            name: profile.name,
+            url: profile.siteUrl,
+        },
+        keywords: project.tech.join(', '),
+        url: `${profile.siteUrl}/project/${params.slug}`,
+        ...(project.links?.live && project.links.live !== '#' ? { sameAs: project.links.live } : {}),
+    }
+
     return (
         <main className="min-h-screen bg-black pt-32 pb-20 px-6 md:px-12 xl:px-24">
+            <script
+                type="application/ld+json"
+                // eslint-disable-next-line react/no-danger
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
             <div className="max-w-4xl mx-auto">
                 <Link
-                    href="/#projects"
+                    href="/projects"
                     className="inline-flex items-center text-[#86868b] hover:text-[#f5f5f7] transition-colors mb-16"
                 >
                     ← Back to Portfolio
                 </Link>
 
                 <h1 className="text-5xl md:text-7xl font-bold text-[#f5f5f7] tracking-tight mb-8">
-                    {project.title.split('—')[0].trim()}
+                    {name}
                 </h1>
 
                 <div className="flex flex-wrap gap-3 mb-16">
@@ -55,7 +112,7 @@ export default function ProjectDetail({ params }: { params: { slug: string } }) 
                     </section>
 
                     <div className="flex gap-6 pt-12 border-t border-[#333]">
-                        {project.links?.live && (
+                        {project.links?.live && project.links.live !== '#' && (
                             <a
                                 href={project.links.live}
                                 target="_blank"
@@ -65,7 +122,7 @@ export default function ProjectDetail({ params }: { params: { slug: string } }) 
                                 View Live Project
                             </a>
                         )}
-                        {project.links?.github && (
+                        {project.links?.github && project.links.github !== '#' && (
                             <a
                                 href={project.links.github}
                                 target="_blank"
