@@ -1,7 +1,7 @@
 export const profile = {
   name: "Rounak Chadha",
   role: "Full-Stack Developer & Software Engineer",
-  siteUrl: "https://rounakchadha.tech",
+  siteUrl: "https://rounakchadha.com",
   email: "chadharounak@gmail.com",
   phone: "+91 8948946965",
   location: "Lucknow, Uttar Pradesh",
