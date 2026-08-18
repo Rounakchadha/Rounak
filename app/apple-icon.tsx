@@ -18,8 +18,8 @@ export default function AppleIcon() {
           fontFamily: 'sans-serif',
         }}
       >
-        <div style={{ display: 'flex', fontSize: 88, fontWeight: 800, color: '#f5f5f7', letterSpacing: -2 }}>
-          RC<span style={{ color: '#2997ff' }}>.</span>
+        <div style={{ display: 'flex', fontSize: 88, fontWeight: 800, color: '#ffffff', letterSpacing: -2 }}>
+          RC.
         </div>
       </div>
     ),

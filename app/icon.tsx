@@ -19,8 +19,8 @@ export default function Icon() {
           fontFamily: 'sans-serif',
         }}
       >
-        <div style={{ display: 'flex', fontSize: 32, fontWeight: 800, color: '#f5f5f7', letterSpacing: -1 }}>
-          RC<span style={{ color: '#2997ff' }}>.</span>
+        <div style={{ display: 'flex', fontSize: 32, fontWeight: 800, color: '#ffffff', letterSpacing: -1 }}>
+          RC.
         </div>
       </div>
     ),

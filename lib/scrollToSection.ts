@@ -1,15 +1,11 @@
 import { getLenis } from './lenis'
 
 // Nav labels don't always match the DOM id of the section they should land
-// on (e.g. the "Skills" link should land on the technical skills list, not
-// the id="skills" services/bento section further up the page).
-const SECTION_IDS: Record<string, string> = {
-  about: 'about',
-  experience: 'experience',
-  projects: 'projects',
-  skills: 'technical-skills',
-  contact: 'contact',
-}
+// on. Currently every label happens to match its section's id 1:1 (the
+// technical skills list owns id="skills"; the services/bento section further
+// up the page owns id="services" and isn't nav-linked), so this is empty —
+// kept as the place to add an override if that ever changes again.
+const SECTION_IDS: Record<string, string> = {}
 
 export function resolveSectionId(label: string) {
   const key = label.toLowerCase()
