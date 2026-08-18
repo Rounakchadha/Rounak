@@ -363,6 +363,5 @@ function TechnicalSkillsAnimated() {
 }
 
 export default function TechnicalSkills() {
-    const isMobile = useIsMobile()
-    return isMobile ? <TechnicalSkillsStatic /> : <TechnicalSkillsAnimated />
+    return <TechnicalSkillsAnimated />
 }
