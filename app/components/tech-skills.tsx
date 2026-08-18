@@ -1,7 +1,8 @@
 'use client'
 
 import { useRef, useEffect, useState } from 'react'
-import { motion, useMotionValue, useTransform } from 'framer-motion'
+import { motion, useMotionValue, useTransform, AnimatePresence } from 'framer-motion'
+import { ChevronDown } from 'lucide-react'
 import { profile } from '@/data/profile'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -62,8 +63,10 @@ function TechnicalSkillsAnimated() {
     const textSectionRef = useRef<HTMLDivElement>(null)
     const skillsSectionRef = useRef<HTMLDivElement>(null)
     const [currentIndex, setCurrentIndex] = useState(-1)
+    const currentIndexRef = useRef(-1) // mirrors currentIndex for the idle-timer closure below, which fires from a setTimeout and would otherwise see a stale value
     const scrollTriggerRef = useRef<ScrollTrigger | null>(null)
     const [cardStyle, setCardStyle] = useState({ width: '85vw', maxWidth: '400px', height: '450px' })
+    const [showScrollHint, setShowScrollHint] = useState(false)
 
     useEffect(() => {
         const handleResize = () => {
@@ -151,6 +154,11 @@ function TechnicalSkillsAnimated() {
         scrollTriggerRef.current?.kill()
         scrollTriggerRef.current = null
 
+        // Declared here (not inside gsap.context below) so the cleanup
+        // function at the bottom of this effect can clear them on unmount.
+        let idleTimeoutId: ReturnType<typeof setTimeout> | null = null
+        let hintTween: gsap.core.Timeline | null = null
+
         const ctx = gsap.context(() => {
             // Cache every card element once — onUpdate fires on essentially
             // every scroll tick while pinned, so re-running querySelector for
@@ -195,6 +203,47 @@ function TechnicalSkillsAnimated() {
 
             const round = (n: number) => Math.round(n)
 
+            // Idle nudge: if someone lands on the pinned section and hasn't
+            // scrolled within it after 3s, play a one-shot preview of card 0
+            // sliding in from the right (and back out) plus a bouncing
+            // down-arrow, so it's obvious the section is scrollable instead
+            // of looking like a dead end. Desktop only — the arrow markup
+            // below is also hidden on mobile via `hidden md:flex`.
+            const isDesktop = window.innerWidth >= 768
+
+            const cancelHint = () => {
+                if (idleTimeoutId) {
+                    clearTimeout(idleTimeoutId)
+                    idleTimeoutId = null
+                }
+                if (hintTween) {
+                    hintTween.kill()
+                    hintTween = null
+                }
+                setShowScrollHint(false)
+            }
+
+            const armIdleTimer = () => {
+                if (!isDesktop) return
+                if (idleTimeoutId) clearTimeout(idleTimeoutId)
+                idleTimeoutId = setTimeout(() => {
+                    // Only nudge if they're still sitting before the first
+                    // card (i.e. haven't actually started scrolling through
+                    // the carousel) — no point hinting at something they've
+                    // already discovered.
+                    if (currentIndexRef.current !== -1) return
+                    const card0 = cardEls[0]
+                    if (!card0) return
+
+                    setShowScrollHint(true)
+                    hintTween = gsap.timeline()
+                    hintTween
+                        .set(card0, { x: offX, y: 0, opacity: 0 })
+                        .to(card0, { x: 0, opacity: 1, duration: 0.7, ease: 'power2.out' })
+                        .to(card0, { x: offX, opacity: 0, duration: 0.6, ease: 'power2.in', delay: 0.5 })
+                }, 3000)
+            }
+
             scrollTriggerRef.current = ScrollTrigger.create({
                 trigger: skillsSectionRef.current!,
                 start: 'top top',
@@ -203,13 +252,27 @@ function TechnicalSkillsAnimated() {
                 anticipatePin: 1, // Fixes mobile momentum scroll jumping past the pin
                 scrub: 1,
                 invalidateOnRefresh: true,
+                onToggle: (self) => {
+                    // self.isActive === true the moment the pin engages
+                    // ("landing on the section"); false the moment it
+                    // releases (scrolled past it in either direction).
+                    if (self.isActive) armIdleTimer()
+                    else cancelHint()
+                },
                 onUpdate: (self) => {
+                    // Any real scroll input cancels the pending/playing hint
+                    // and restarts the 3s idle countdown from this point.
+                    cancelHint()
+                    armIdleTimer()
+
                     const t = (self.scroll() - self.start) / (self.end - self.start) // 0..1
                     const raw = startRaw + t * span
 
                     // UI counter (clamped)
                     const a = Math.max(0, Math.min(N - 1, Math.floor(raw)))
-                    setCurrentIndex(raw < 0 ? -1 : a)
+                    const nextIndex = raw < 0 ? -1 : a
+                    currentIndexRef.current = nextIndex
+                    setCurrentIndex(nextIndex)
 
                     for (let index = 0; index < N; index++) {
                         const el = cardEls[index]
@@ -256,6 +319,8 @@ function TechnicalSkillsAnimated() {
 
         return () => {
             window.removeEventListener('resize', onResize)
+            if (idleTimeoutId) clearTimeout(idleTimeoutId)
+            hintTween?.kill()
             scrollTriggerRef.current?.kill()
             scrollTriggerRef.current = null
             ctx.revert()
@@ -342,6 +407,27 @@ function TechnicalSkillsAnimated() {
                                     {String(safeIndex).padStart(2, '0')} — {String(N).padStart(2, '0')}
                                 </div>
                             </div>
+
+                            {/* Idle nudge: appears after 3s of no scroll input, paired with the
+                                card-0 preview animation set up above. Desktop only. */}
+                            <AnimatePresence>
+                                {showScrollHint && (
+                                    <motion.div
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        exit={{ opacity: 0 }}
+                                        transition={{ duration: 0.4 }}
+                                        className="hidden md:flex absolute bottom-4 left-1/2 -translate-x-1/2 z-30 pointer-events-none flex-col items-center"
+                                    >
+                                        <motion.div
+                                            animate={{ y: [0, 8, 0] }}
+                                            transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
+                                        >
+                                            <ChevronDown className="w-6 h-6 text-[#86868b]" strokeWidth={2} />
+                                        </motion.div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
                         </div>
                     </div>
                 </div>
