@@ -204,7 +204,7 @@ function TechnicalSkillsAnimated() {
             const round = (n: number) => Math.round(n)
 
             // Idle nudge: if someone lands on the pinned section and hasn't
-            // scrolled within it after 3s, auto-advance the real scroll
+            // scrolled within it after 2s, auto-advance the real scroll
             // position to bring card 0 in — the exact same onUpdate/arc
             // logic below runs either way, so this isn't a separate preview
             // animation, it's the real thing playing on its own. Once it
@@ -254,7 +254,7 @@ function TechnicalSkillsAnimated() {
                         window.scrollTo({ top: targetScroll, behavior: 'smooth' })
                         setTimeout(finishAutoScroll, 1400)
                     }
-                }, 3000)
+                }, 2000)
             }
 
             scrollTriggerRef.current = ScrollTrigger.create({
@@ -429,7 +429,7 @@ function TechnicalSkillsAnimated() {
                                 </div>
                             </div>
 
-                            {/* Idle nudge: appears after 3s of no scroll input, paired with the
+                            {/* Idle nudge: appears after 2s of no scroll input, paired with the
                                 card-0 preview animation set up above. Desktop only. */}
                             <AnimatePresence>
                                 {showScrollHint && (
