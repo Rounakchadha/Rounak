@@ -64,6 +64,7 @@ function TechnicalSkillsAnimated() {
     const skillsSectionRef = useRef<HTMLDivElement>(null)
     const [currentIndex, setCurrentIndex] = useState(-1)
     const currentIndexRef = useRef(-1) // mirrors currentIndex for the idle-timer closure below, which fires from a setTimeout and would otherwise see a stale value
+    const isAutoScrollingRef = useRef(false)
     const scrollTriggerRef = useRef<ScrollTrigger | null>(null)
     const [cardStyle, setCardStyle] = useState({ width: '85vw', maxWidth: '400px', height: '450px' })
     const [showScrollHint, setShowScrollHint] = useState(false)
@@ -155,9 +156,8 @@ function TechnicalSkillsAnimated() {
         scrollTriggerRef.current = null
 
         // Declared here (not inside gsap.context below) so the cleanup
-        // function at the bottom of this effect can clear them on unmount.
+        // function at the bottom of this effect can clear it on unmount.
         let idleTimeoutId: ReturnType<typeof setTimeout> | null = null
-        let hintTween: gsap.core.Timeline | null = null
 
         const ctx = gsap.context(() => {
             // Cache every card element once — onUpdate fires on essentially
@@ -204,43 +204,56 @@ function TechnicalSkillsAnimated() {
             const round = (n: number) => Math.round(n)
 
             // Idle nudge: if someone lands on the pinned section and hasn't
-            // scrolled within it after 3s, play a one-shot preview of card 0
-            // sliding in from the right (and back out) plus a bouncing
-            // down-arrow, so it's obvious the section is scrollable instead
-            // of looking like a dead end. Desktop only — the arrow markup
-            // below is also hidden on mobile via `hidden md:flex`.
+            // scrolled within it after 3s, auto-advance the real scroll
+            // position to bring card 0 in — the exact same onUpdate/arc
+            // logic below runs either way, so this isn't a separate preview
+            // animation, it's the real thing playing on its own. Once it
+            // lands, scroll position has actually moved, so the person can
+            // just keep scrolling normally from there. Desktop only — the
+            // arrow markup below is also hidden on mobile via `hidden md:flex`.
             const isDesktop = window.innerWidth >= 768
 
-            const cancelHint = () => {
+            const cancelIdleTimer = () => {
                 if (idleTimeoutId) {
                     clearTimeout(idleTimeoutId)
                     idleTimeoutId = null
                 }
-                if (hintTween) {
-                    hintTween.kill()
-                    hintTween = null
-                }
-                setShowScrollHint(false)
             }
 
             const armIdleTimer = () => {
                 if (!isDesktop) return
-                if (idleTimeoutId) clearTimeout(idleTimeoutId)
+                cancelIdleTimer()
                 idleTimeoutId = setTimeout(() => {
                     // Only nudge if they're still sitting before the first
                     // card (i.e. haven't actually started scrolling through
                     // the carousel) — no point hinting at something they've
                     // already discovered.
                     if (currentIndexRef.current !== -1) return
-                    const card0 = cardEls[0]
-                    if (!card0) return
+                    const st = scrollTriggerRef.current
+                    if (!st) return
 
+                    // Scroll position at which raw === 0, i.e. card 0 fully arrived.
+                    const t0 = -startRaw / span
+                    const targetScroll = st.start + t0 * (st.end - st.start)
+
+                    isAutoScrollingRef.current = true
                     setShowScrollHint(true)
-                    hintTween = gsap.timeline()
-                    hintTween
-                        .set(card0, { x: offX, y: 0, opacity: 0 })
-                        .to(card0, { x: 0, opacity: 1, duration: 0.7, ease: 'power2.out' })
-                        .to(card0, { x: offX, opacity: 0, duration: 0.6, ease: 'power2.in', delay: 0.5 })
+
+                    const finishAutoScroll = () => {
+                        isAutoScrollingRef.current = false
+                    }
+
+                    const lenis = getLenis()
+                    if (lenis) {
+                        lenis.scrollTo(targetScroll, {
+                            duration: 1.4,
+                            easing: (x: number) => 1 - Math.pow(1 - x, 3),
+                            onComplete: finishAutoScroll,
+                        })
+                    } else {
+                        window.scrollTo({ top: targetScroll, behavior: 'smooth' })
+                        setTimeout(finishAutoScroll, 1400)
+                    }
                 }, 3000)
             }
 
@@ -256,14 +269,23 @@ function TechnicalSkillsAnimated() {
                     // self.isActive === true the moment the pin engages
                     // ("landing on the section"); false the moment it
                     // releases (scrolled past it in either direction).
-                    if (self.isActive) armIdleTimer()
-                    else cancelHint()
+                    if (self.isActive) {
+                        armIdleTimer()
+                    } else {
+                        cancelIdleTimer()
+                        isAutoScrollingRef.current = false
+                        setShowScrollHint(false)
+                    }
                 },
                 onUpdate: (self) => {
-                    // Any real scroll input cancels the pending/playing hint
-                    // and restarts the 3s idle countdown from this point.
-                    cancelHint()
-                    armIdleTimer()
+                    // Ticks generated by our own auto-scroll aren't "the
+                    // person scrolled" — only real input cancels the hint
+                    // and restarts the idle countdown.
+                    if (!isAutoScrollingRef.current) {
+                        cancelIdleTimer()
+                        armIdleTimer()
+                        setShowScrollHint(false)
+                    }
 
                     const t = (self.scroll() - self.start) / (self.end - self.start) // 0..1
                     const raw = startRaw + t * span
@@ -320,7 +342,6 @@ function TechnicalSkillsAnimated() {
         return () => {
             window.removeEventListener('resize', onResize)
             if (idleTimeoutId) clearTimeout(idleTimeoutId)
-            hintTween?.kill()
             scrollTriggerRef.current?.kill()
             scrollTriggerRef.current = null
             ctx.revert()
