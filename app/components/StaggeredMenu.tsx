@@ -386,8 +386,8 @@ export const StaggeredMenu = ({
       </div>
       <header className="staggered-menu-header" aria-label="Main navigation header">
         <div className="sm-logo" aria-label="Logo">
-          <a href="/" className="text-xl sm:text-2xl font-bold" style={{ color: open ? openMenuButtonColor : menuButtonColor, transition: 'color 0.3s ease' }}>
-            RC
+          <a href="/">
+            <img src="/logo-mark.png" alt="Rounak Chadha" className="h-6 sm:h-7" />
           </a>
         </div>
         <button

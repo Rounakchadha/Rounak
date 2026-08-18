@@ -72,8 +72,8 @@ export default function NavBar() {
             {/* Desktop Header -> completely unchanged original structure */}
             <nav className="hidden md:block sticky top-0 w-full border-b border-[#333] z-50 bg-black/40 backdrop-blur-xl">
                 <div className="w-full h-[80px] flex items-center justify-between px-6 md:px-12 xl:px-24">
-                <Link href="/" className="font-bold text-xl tracking-tighter text-[#f5f5f7] cursor-pointer hover:text-white transition-colors">
-                    RC.
+                <Link href="/" className="cursor-pointer opacity-90 hover:opacity-100 transition-opacity">
+                    <img src="/logo-mark.png" alt="Rounak Chadha" className="h-7" />
                 </Link>
                 
                 <div className="hidden md:flex items-center gap-8 ml-[5vw]">
