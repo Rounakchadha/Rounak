@@ -228,36 +228,19 @@ export default function Skills() {
               <p className="text-[#86868b] text-sm md:text-base leading-relaxed mb-4 relative z-10 max-w-lg shrink-0">
                 Crafting pixel-perfect, engaging interfaces with complex animations and 3D rendering (Three.js/WebXR) that captivate and convert users.
               </p>
-              {/* Marquee Carousel for UI/UX */}
-              <div className="w-full flex-1 min-h-[90px] rounded-2xl bg-[#0a0a0ae6] border border-[#222] relative overflow-hidden group-hover:border-[#333] transition-colors duration-500 flex items-center justify-center p-3">
-                {/* Horizontal Scrolling Marquee container */}
-                <div className="relative w-full h-full overflow-hidden flex justify-start items-center pl-[50%] mask-image-horizontal gap-4">
-                  <motion.div
-                    className="flex flex-row h-[80%] absolute left-0"
-                    animate={{ x: ["0%", "-50%"] }}
-                    transition={{
-                      duration: 15,
-                      ease: "linear",
-                      repeat: Infinity,
-                    }}
-                  >
-                    {/* First wrapper */}
-                    <div className="flex flex-row gap-4 pr-4 shrink-0 h-full">
-                      <img src="/assets/ai_demo_1.jpg" alt="AI Chatbot Demo" className="h-full w-auto rounded-xl object-cover border border-[#222] shadow-2xl" />
-                      <img src="/assets/ai_demo_2.jpg" alt="AI Interface" className="h-full w-auto rounded-xl object-cover border border-[#222] shadow-2xl" />
-                      <img src="/assets/ai_demo_3.png" alt="Automation Workflow" className="h-full w-auto rounded-xl object-cover border border-[#222] shadow-2xl" />
-                    </div>
-                    {/* Second wrapper for seamless looping */}
-                    <div className="flex flex-row gap-4 pr-4 shrink-0 h-full">
-                      <img src="/assets/ai_demo_1.jpg" alt="AI Chatbot Demo" className="h-full w-auto rounded-xl object-cover border border-[#222] shadow-2xl" />
-                      <img src="/assets/ai_demo_2.jpg" alt="AI Interface" className="h-full w-auto rounded-xl object-cover border border-[#222] shadow-2xl" />
-                      <img src="/assets/ai_demo_3.png" alt="Automation Workflow" className="h-full w-auto rounded-xl object-cover border border-[#222] shadow-2xl" />
-                    </div>
-                  </motion.div>
-                </div>
-                {/* Left/Right Gradient Overlays for smooth fade out */}
-                <div className="absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-[#0a0a0ae6] to-transparent z-10 pointer-events-none rounded-l-2xl" />
-                <div className="absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-[#0a0a0ae6] to-transparent z-10 pointer-events-none rounded-r-2xl" />
+              {/* Video */}
+              <div className="w-full flex-1 min-h-[90px] rounded-2xl bg-gradient-to-br from-[#1c1c1c] to-[#0a0a0a] border border-[#222] relative overflow-hidden group-hover:border-[#333] transition-colors duration-500 flex items-center justify-center p-0">
+                <video
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="w-full h-full object-cover rounded-2xl"
+                >
+                  <source src="/infra.webm" type="video/webm" />
+                  <source src="/infra.mp4" type="video/mp4" />
+                </video>
+                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
               </div>
             </motion.div>
 
@@ -327,19 +310,36 @@ export default function Skills() {
               <p className="text-[#86868b] text-sm md:text-base leading-relaxed mb-4 relative z-10 max-w-lg shrink-0">
                 Designing smart chatbot integrations and RAG pipelines for intelligent, automated workflows to streamline your business operations.
               </p>
-              {/* Tall Image Placeholder with Video */}
-              <div className="w-full flex-1 min-h-[90px] rounded-2xl bg-gradient-to-br from-[#1c1c1c] to-[#0a0a0a] border border-[#222] relative overflow-hidden group-hover:border-[#333] transition-colors duration-500 flex items-center justify-center p-0">
-                <video
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="w-full h-full object-cover rounded-2xl"
-                >
-                  <source src="/infra.webm" type="video/webm" />
-                  <source src="/infra.mp4" type="video/mp4" />
-                </video>
-                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+              {/* Marquee Carousel for AI & Automation */}
+              <div className="w-full flex-1 min-h-[90px] rounded-2xl bg-[#0a0a0ae6] border border-[#222] relative overflow-hidden group-hover:border-[#333] transition-colors duration-500 flex items-center justify-center p-3">
+                {/* Horizontal Scrolling Marquee container */}
+                <div className="relative w-full h-full overflow-hidden flex justify-start items-center pl-[50%] mask-image-horizontal gap-4">
+                  <motion.div
+                    className="flex flex-row h-[80%] absolute left-0"
+                    animate={{ x: ["0%", "-50%"] }}
+                    transition={{
+                      duration: 15,
+                      ease: "linear",
+                      repeat: Infinity,
+                    }}
+                  >
+                    {/* First wrapper */}
+                    <div className="flex flex-row gap-4 pr-4 shrink-0 h-full">
+                      <img src="/assets/ai_demo_1.jpg" alt="AI Chatbot Demo" className="h-full w-auto rounded-xl object-cover border border-[#222] shadow-2xl" />
+                      <img src="/assets/ai_demo_2.jpg" alt="AI Interface" className="h-full w-auto rounded-xl object-cover border border-[#222] shadow-2xl" />
+                      <img src="/assets/ai_demo_3.png" alt="Automation Workflow" className="h-full w-auto rounded-xl object-cover border border-[#222] shadow-2xl" />
+                    </div>
+                    {/* Second wrapper for seamless looping */}
+                    <div className="flex flex-row gap-4 pr-4 shrink-0 h-full">
+                      <img src="/assets/ai_demo_1.jpg" alt="AI Chatbot Demo" className="h-full w-auto rounded-xl object-cover border border-[#222] shadow-2xl" />
+                      <img src="/assets/ai_demo_2.jpg" alt="AI Interface" className="h-full w-auto rounded-xl object-cover border border-[#222] shadow-2xl" />
+                      <img src="/assets/ai_demo_3.png" alt="Automation Workflow" className="h-full w-auto rounded-xl object-cover border border-[#222] shadow-2xl" />
+                    </div>
+                  </motion.div>
+                </div>
+                {/* Left/Right Gradient Overlays for smooth fade out */}
+                <div className="absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-[#0a0a0ae6] to-transparent z-10 pointer-events-none rounded-l-2xl" />
+                <div className="absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-[#0a0a0ae6] to-transparent z-10 pointer-events-none rounded-r-2xl" />
               </div>
             </motion.div>
 
