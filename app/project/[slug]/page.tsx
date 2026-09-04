@@ -1,19 +1,22 @@
 import { profile } from '@/data/profile'
-import { slugifyProjectTitle } from '@/lib/slug'
+import { getAllProjects, getProjectBySlug } from '@/lib/projects'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 
+// Content lives in Supabase now and can change at any time via /admin —
+// revalidate periodically instead of freezing at build time. Slugs not
+// covered by generateStaticParams (i.e. added after the last build) still
+// render on demand since dynamicParams defaults to true.
+export const revalidate = 60
+
 export async function generateStaticParams() {
-    return profile.projects.map((project) => ({
-        slug: slugifyProjectTitle(project.title),
-    }))
+    const projects = await getAllProjects()
+    return projects.map((project) => ({ slug: project.slug }))
 }
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-    const project = profile.projects.find(
-        (p) => slugifyProjectTitle(p.title) === params.slug
-    )
+    const project = await getProjectBySlug(params.slug)
 
     if (!project) {
         return { title: 'Project Not Found' }
@@ -43,10 +46,8 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     }
 }
 
-export default function ProjectDetail({ params }: { params: { slug: string } }) {
-    const project = profile.projects.find(
-        p => slugifyProjectTitle(p.title) === params.slug
-    )
+export default async function ProjectDetail({ params }: { params: { slug: string } }) {
+    const project = await getProjectBySlug(params.slug)
 
     if (!project) {
         notFound()

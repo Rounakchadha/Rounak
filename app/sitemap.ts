@@ -1,8 +1,8 @@
 import { MetadataRoute } from 'next'
 import { profile } from '@/data/profile'
-import { slugifyProjectTitle } from '@/lib/slug'
+import { getAllProjects } from '@/lib/projects'
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = profile.siteUrl
 
   const staticRoutes: MetadataRoute.Sitemap = [
@@ -20,8 +20,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ]
 
-  const projectRoutes: MetadataRoute.Sitemap = profile.projects.map((project) => ({
-    url: `${base}/project/${slugifyProjectTitle(project.title)}`,
+  const projects = await getAllProjects()
+  const projectRoutes: MetadataRoute.Sitemap = projects.map((project) => ({
+    url: `${base}/project/${project.slug}`,
     lastModified: new Date(),
     changeFrequency: 'yearly',
     priority: 0.6,

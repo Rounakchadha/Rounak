@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import { profile } from '@/data/profile'
-import { slugifyProjectTitle } from '@/lib/slug'
+import type { Project } from '@/lib/projects'
 
 function AutoCarousel({ images, title }: { images: string[]; title: string }) {
   const [index, setIndex] = useState(0)
@@ -72,7 +72,7 @@ function MarqueeCarousel({ images }: { images: string[] }) {
   )
 }
 
-const ProjectRow = ({ project, index }: { project: any, index: number }) => {
+const ProjectRow = ({ project, index }: { project: Project, index: number }) => {
   const [isHovered, setIsHovered] = useState(false)
 
   return (
@@ -166,7 +166,7 @@ const ProjectRow = ({ project, index }: { project: any, index: number }) => {
               {/* Masking Effect Buttons */}
               <div className="flex flex-wrap gap-4 mt-8">
                 <Link
-                  href={`/project/${slugifyProjectTitle(project.title)}`}
+                  href={`/project/${project.slug}`}
                   className="group/btn relative inline-flex items-center justify-center overflow-hidden rounded-full border border-[#f5f5f7] bg-[#f5f5f7] px-8 py-3 text-sm font-semibold transition-all duration-500 hover:bg-black hover:border-[#333]"
                 >
                   <div className="relative flex overflow-hidden">
@@ -259,13 +259,13 @@ const ProjectRow = ({ project, index }: { project: any, index: number }) => {
   )
 }
 
-export default function AllProjectsGallery() {
+export default function AllProjectsGallery({ projects }: { projects: Project[] }) {
   return (
     <div className="bg-black min-h-screen pt-32 pb-32 text-[#f5f5f7]">
       <div className="max-w-[1200px] mx-auto px-6 md:px-12">
         {/* Header */}
         <div className="mb-24">
-          <motion.h1 
+          <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
@@ -273,20 +273,20 @@ export default function AllProjectsGallery() {
           >
             Ideas that actually compiled.
           </motion.h1>
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 0.2 }}
             className="text-xl md:text-2xl text-[#86868b] max-w-3xl font-medium"
           >
-            A not-so-comprehensive archive of {profile.projects.length} midnight side quests, AI experiments, and production-ready applications.
+            A not-so-comprehensive archive of {projects.length} midnight side quests, AI experiments, and production-ready applications.
           </motion.p>
         </div>
 
         {/* The List */}
         <div className="flex flex-col border-t border-[#333]">
-          {profile.projects.map((project, index) => (
-            <ProjectRow key={index} project={project} index={index} />
+          {projects.map((project, index) => (
+            <ProjectRow key={project.id} project={project} index={index} />
           ))}
         </div>
 

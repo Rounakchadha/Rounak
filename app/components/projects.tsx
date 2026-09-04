@@ -2,7 +2,7 @@
 
 import { useRef, useState, useEffect } from 'react'
 import { motion, useScroll, useTransform, MotionValue, AnimatePresence, useMotionValue, useAnimationFrame, useMotionValueEvent } from 'framer-motion'
-import { profile } from '@/data/profile'
+import type { Project } from '@/lib/projects'
 import { useIsMobile } from '@/lib/useIsMobile'
 
 // Only mounts the active image. Uses a cheap blur-sm fill behind object-contain
@@ -114,7 +114,7 @@ function MarqueeCarousel({ images }: { images: string[] }) {
 }
 
 function ProjectCard({ project, projectIndex, totalSteps, progress }: {
-  project: any
+  project: Project
   projectIndex: number
   totalSteps: number
   progress: MotionValue<number>
@@ -294,7 +294,7 @@ function CtaCard({ projectIndex, totalSteps, progress }: {
 
 // Simple static stacked list — no pinning, no perspective/3D flip, no
 // scroll-linked background marquee text. Just cards you scroll past normally.
-function ProjectCardStatic({ project, index }: { project: any, index: number }) {
+function ProjectCardStatic({ project, index }: { project: Project, index: number }) {
   const hasLive = project.links?.live && project.links.live !== '#'
   const hasGithub = project.links?.github && project.links.github !== '#'
 
@@ -384,8 +384,8 @@ function ProjectCardStatic({ project, index }: { project: any, index: number }) 
   )
 }
 
-function ProjectsCarousel() {
-  const displayProjects = profile.projects.slice(0, 6)
+function ProjectsCarousel({ projects }: { projects: Project[] }) {
+  const displayProjects = projects
   // 6 sets to ensure massive buffer for momentum gliding
   const carouselItems = [...displayProjects, ...displayProjects, ...displayProjects, ...displayProjects, ...displayProjects, ...displayProjects]
   
@@ -522,10 +522,10 @@ function ProjectsCarousel() {
   )
 }
 
-function ProjectsAnimated() {
+function ProjectsAnimated({ projects }: { projects: Project[] }) {
   const containerRef = useRef<HTMLDivElement>(null)
 
-  const displayProjects = profile.projects.slice(0, 6)
+  const displayProjects = projects
   const totalCards = displayProjects.length + 1
   const totalSteps = totalCards + 1
 
@@ -576,7 +576,7 @@ function ProjectsAnimated() {
   )
 }
 
-export default function Projects() {
+export default function Projects({ projects }: { projects: Project[] }) {
   const isMobile = useIsMobile()
-  return isMobile ? <ProjectsCarousel /> : <ProjectsAnimated />
+  return isMobile ? <ProjectsCarousel projects={projects} /> : <ProjectsAnimated projects={projects} />
 }

@@ -13,6 +13,7 @@
     "@react-three/drei": "^9.88.11",
     "@react-three/fiber": "^8.15.11",
     "@studio-freight/lenis": "^1.0.29",
+    "@supabase/supabase-js": "^2.115.0",
     "@types/node": "20.10.0",
     "@types/react": "18.2.39",
     "@types/react-dom": "18.2.17",

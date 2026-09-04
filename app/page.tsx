@@ -1,5 +1,3 @@
-'use client'
-
 import Hero from './components/hero'
 import About from './components/about'
 import Projects from './components/projects'
@@ -9,8 +7,13 @@ import TechnicalSkills from './components/tech-skills'
 import Contact from './components/contact'
 import SmoothScroll from './components/smoothScroll'
 import NavBar from './components/navbar'
+import { getFeaturedProjects } from '@/lib/projects'
 
-export default function Home() {
+export const revalidate = 60
+
+export default async function Home() {
+  const featuredProjects = await getFeaturedProjects()
+
   return (
     <SmoothScroll>
       <div className="relative w-full bg-black min-h-screen">
@@ -27,7 +30,7 @@ export default function Home() {
               <About />
               <Skills />
               <Experience />
-              <Projects />
+              <Projects projects={featuredProjects} />
               <TechnicalSkills />
               <Contact />
             </div>

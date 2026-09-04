@@ -26,6 +26,10 @@ const isProductionDeployment = process.env.VERCEL_ENV
   : process.env.NODE_ENV === 'production'
 
 const title = `${profile.name} — ${profile.role}`
+// Static list — project titles used to be appended here, but that data now
+// lives in Supabase and this metadata object is computed at module load
+// time (synchronous), not worth switching to an async generateMetadata()
+// just for the keywords tag, which Google has ignored for ranking since ~2009.
 const keywords = [
   profile.name,
   'Rounak Chadha',
@@ -36,7 +40,6 @@ const keywords = [
   'Next.js Developer',
   'Web Developer Lucknow',
   'Web Developer India',
-  ...profile.projects.slice(0, 6).map((p) => p.title.split('—')[0].trim()),
 ]
 
 export const metadata: Metadata = {
